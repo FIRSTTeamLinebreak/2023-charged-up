@@ -67,10 +67,10 @@ hs_err_pid*
 .fuse_hidden*
 
 # KDE directory preferences
-.directory/
+.directory
 
 # Linux trash folder which might appear on any partition or disk
-.Trash-*/
+.Trash-*
 
 # .nfs files are created when an open file is removed but is still being accessed
 .nfs*
@@ -104,7 +104,7 @@ Temporary Items
 .apdisk
 
 ### VisualStudioCode ###
-.vscode/
+.vscode/*
 !.vscode/settings.json
 !.vscode/tasks.json
 !.vscode/launch.json
@@ -136,8 +136,8 @@ $RECYCLE.BIN/
 *.lnk
 
 ### Gradle ###
-.gradle/
-build/
+.gradle
+/build/
 
 # Ignore Gradle GUI config
 gradle-app.setting

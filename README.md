@@ -1,15 +1,15 @@
-# ${1:Year and FRC Competition name} Robot Code for Team Linebreak
+# 2023 Robot Code for Team Linebreak
 
 ## Purpose
 
-Code contained in this repository was made to control our robot for the ${2:Current year} FRC competition.
+Code contained in this repository was made to control our robot for the 2023 FRC competition.
 
 ## Licenses
 
 Code written by the Team Linebreak Programming Team and other contributors is released to the public under the MIT license.
 
 ```txt
-Copyright (c) ${2:Current year} Team Linebreak Programming Team and other contributors
+Copyright (c) 2023 Team Linebreak Programming Team and other contributors
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
