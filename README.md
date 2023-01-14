@@ -22,6 +22,7 @@ Instructions on how to report errors and warnings via a CLI are in the works.
 #### Modifications From Google's Java Style Guide
 
 + Indentations use 4 spaces instead of Google's 2
++ Line limit is 300 chars instead of Google's 100
 
 ## Licenses
 
