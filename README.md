@@ -4,6 +4,25 @@
 
 Code contained in this repository was made to control our robot for the 2023 FRC competition.
 
+## Development
+
+### Code Style
+
+This project uses [Checkstyle](https://checkstyle.org) for code style enforcement and linting along with [Google's Java Style Guide](https://google.github.io/styleguide/javaguide.html).
+
+#### VSCode Setup
+
+1. Download the checkstyle plugin by [ShengChen](https://marketplace.visualstudio.com/items?itemName=shengchen.vscode-checkstyle)
+2. Set the configuration file to `${workspaceFolder}/checkstyle.xml`
+3. Set the version to `10.6.0`
+4. Write code
+
+Instructions on how to report errors and warnings via a CLI are in the works.
+
+#### Modifications From Google's Java Style Guide
+
++ Indentations use 4 spaces instead of Google's 2
+
 ## Licenses
 
 Code written by the Team Linebreak Programming Team and other contributors is released to the public under the MIT license.
@@ -33,5 +52,7 @@ SOFTWARE.
 ### Software Dependencies
 
 Gradle is licensed under [the Apache License v2](./gradle/LICENSE).
+
+PMD is licensed under [a BSD-style license](./pmd/LICENSE).
 
 WPILib is licensed under [their own license](./WPILib-License.md). Per the license terms, FIRST and WPILib **do not** endorse or promote this project or the software contained herein.
