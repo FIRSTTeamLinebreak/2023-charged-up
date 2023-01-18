@@ -5,110 +5,110 @@ import edu.wpi.first.wpilibj.drive.MecanumDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-/**
- * The subsystem that handles the control of the drive base.
- */
+/** The subsystem that handles the control of the drive base. */
 public class Drive extends SubsystemBase {
 
-	// Define the signleton 
-	private static Drive instance;
-	public static Drive getInstance() {
-		if (instance == null) {
-			instance = new Drive();
-		}
-		return instance;
-	}
+    // Define the singleton
+    private static Drive instance;
 
-	private final WPI_VictorSPX frontLeftMotor, frontRightMotor, backLeftMotor, backRightMotor;
-	private final MecanumDrive drive; // The control class that does all the math required to run a mecanum drive base
-	private double acceration, xSpeed, ySpeed, rotation;
+    /** Get this instance.
+     *
+     * @return This instance
+     */
+    public static Drive getInstance() {
+        if (instance == null) {
+            instance = new Drive();
+        }
 
-	public Drive() {
-		// Initalize the motors
-		frontLeftMotor = new WPI_VictorSPX(0);
-		frontRightMotor = new WPI_VictorSPX(1);
-		backLeftMotor = new WPI_VictorSPX(2);
-		backRightMotor = new WPI_VictorSPX(3);
-		frontRightMotor.setInverted(true);
-		backRightMotor.setInverted(true);
+        return instance;
+    }
 
-		// Initalize the drive base
-		drive = new MecanumDrive(frontLeftMotor, backLeftMotor, frontRightMotor, backRightMotor);
+    private final WPI_VictorSPX frontLeftMotor;
+    private final WPI_VictorSPX frontRightMotor;
+    private final WPI_VictorSPX backLeftMotor;
+    private final WPI_VictorSPX backRightMotor;
 
-		//set speeds to zero
-		xSpeed = ySpeed = rotation = 0;
-	}
+    private final MecanumDrive drive; // The control class that does all the math required to run a mecanum drive base
 
-	/**
-	 * stores and set the target ramp rate for the motors on the drive train
-	 * 
-	 * @param acceration seconds to full motor speed
-	 */
-	public void setAcceration(double acceration) {
-		this.acceration = acceration;
+    private double acceleration;
+    private double xSpeed;
+    private double ySpeed;
+    private double rotation;
 
-		frontLeftMotor.configOpenloopRamp(acceration);
-		frontRightMotor.configOpenloopRamp(acceration);
-		backLeftMotor.configOpenloopRamp(acceration);
-		backRightMotor.configOpenloopRamp(acceration);
+    /** Initializes a new Drive subsystem object. */
+    public Drive() {
+        // Init the motors
+        frontLeftMotor = new WPI_VictorSPX(0);
+        frontRightMotor = new WPI_VictorSPX(1);
+        backLeftMotor = new WPI_VictorSPX(2);
+        backRightMotor = new WPI_VictorSPX(3);
+        frontRightMotor.setInverted(true);
+        backRightMotor.setInverted(true);
 
-		SmartDashboard.putNumber("Ramp Rate", acceration);
-	}
+        drive = new MecanumDrive(frontLeftMotor, backLeftMotor, frontRightMotor, backRightMotor); // Init the drive base
+        xSpeed = ySpeed = rotation = 0; // Set speeds to zero
+    }
 
-	/**
-	 * set the target x Speed
-	 * 
-	 * @param xSpeed target speed in the left/right direction (-1, 1)
-	 */
-	public void setxSpeed(double xSpeed) {
-		this.xSpeed = xSpeed;
-	}
+    /** Stores and set the target ramp rate for the motors on the drive train.
+     *
+     * @param acceleration Seconds to full motor speed
+     */
+    public void setAcceleration(double acceleration) {
+        this.acceleration = acceleration;
 
-	/**
-	 * set the target y Speed
-	 * 
-	 * @param xSpeed target speed in the up/down direction (-1, 1)
-	 */
-	public void setySpeed(double ySpeed) {
-		this.ySpeed = ySpeed;
-	}
+        frontLeftMotor.configOpenloopRamp(acceleration);
+        frontRightMotor.configOpenloopRamp(acceleration);
+        backLeftMotor.configOpenloopRamp(acceleration);
+        backRightMotor.configOpenloopRamp(acceleration);
 
-	/**
-	 * set the target roational speed
-	 * 
-	 * @param rotation the target speed to rotate the robot in (-1, 1)
-	 */
-	public void setRotation(double rotation) {
-		this.rotation = rotation;
-	}
+        SmartDashboard.putNumber("Ramp Rate", acceleration);
+    }
 
-	/**
-	 * gets the current ramp rate for the motors
-	 * 
-	 * @return the time in seconds for the motors to get to full speed
-	 */
-	public double getAcceration() {
-		return acceration;
-	}
+    /** Set the target x speed.
+     *
+     * @param xSpeed Target speed in the left/right direction (-1, 1)
+     */
+    public void setxSpeed(double xSpeed) {
+        this.xSpeed = xSpeed;
+    }
 
-	/**
-   * Resets this subsystem to default init status
-   */
-	public void init() {
-		acceration = 0;
-		xSpeed = 0;
-		ySpeed = 0;
-		rotation = 0;
+    /** Set the target y speed.
+     *
+     * @param ySpeed Target speed in the up/down direction (-1, 1)
+     */
+    public void setySpeed(double ySpeed) {
+        this.ySpeed = ySpeed;
+    }
 
-		SmartDashboard.putNumber("Ramp Rate", 0);
+    /** Set the target rotational speed.
+     *
+     * @param rotation The target speed to rotate the robot in (-1, 1)
+     */
+    public void setRotation(double rotation) {
+        this.rotation = rotation;
+    }
 
-	}
+    /** Gets the current ramp rate for the motors.
+     *
+     * @return Time in seconds for the motors to get to full speed
+     */
+    public double getAcceleration() {
+        return acceleration;
+    }
 
-	/**
-	 * asks the drive train to move the robot
-	 */
-	@Override
-	public void periodic() {
-		drive.driveCartesian(ySpeed, xSpeed, rotation);
-	}
+    /** Resets this subsystem to default init status. */
+    public void init() {
+        acceleration = 0;
+        xSpeed = 0;
+        ySpeed = 0;
+        rotation = 0;
+
+        SmartDashboard.putNumber("Ramp Rate", 0);
+    }
+
+    /** Asks the drive train to move the robot. */
+    @Override
+    public void periodic() {
+        drive.driveCartesian(ySpeed, xSpeed, rotation);
+    }
 }
