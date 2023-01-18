@@ -14,18 +14,15 @@
     "**/.factorypath": true,
     "**/*~": true
   },
-  "java.test.config": [
-    {
-      "name": "WPIlibUnitTests",
-      "workingDirectory": "${workspaceFolder}/build/jni/release",
-      "vmargs": [ "-Djava.library.path=${workspaceFolder}/build/jni/release" ],
-      "env": {
-        "LD_LIBRARY_PATH": "${workspaceFolder}/build/jni/release" ,
-        "DYLD_LIBRARY_PATH": "${workspaceFolder}/build/jni/release"
-      }
-    },
-  ],
-  "java.test.defaultConfig": "WPIlibUnitTests",
   "java.checkstyle.configuration": "${workspaceFolder}/checkstyle.xml",
   "java.checkstyle.version": "10.6.0",
+  "cSpell.words": [
+    "Checkstyle",
+    "mecanum",
+    "setx",
+    "sety",
+    "Sheng",
+    "teleop",
+    "teleoperated"
+  ],
 }
