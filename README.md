@@ -24,6 +24,10 @@ Instructions on how to report errors and warnings via a CLI are in the works.
 + Indentations use 4 spaces instead of Google's 2
 + Line limit is 300 chars instead of Google's 100
 
+### Spelling
+
+In order to prevent spelling errors, this project uses [Code Spell Checker](https://marketplace.visualstudio.com/items?itemName=streetsidesoftware.code-spell-checker). Please install and enable this plugin in VSCode to prevent spelling errors.
+
 ## Licenses
 
 Code written by the Team Linebreak Programming Team and other contributors is released to the public under the MIT license.
