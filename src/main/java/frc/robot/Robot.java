@@ -18,7 +18,7 @@ public class Robot extends TimedRobot {
 
     private Joystick joystick;
 
-    /** This function is run when the robot is first started up and should be used for any initialization code. */
+    /** This function is run when the robot is first started up. */
     @Override
     public void robotInit() {
         mDrive = new Drive();
@@ -36,7 +36,7 @@ public class Robot extends TimedRobot {
         CommandScheduler.getInstance().run();
     }
 
-    /** This function is called once each time the robot enters disabled mode. */
+    /** This function is called at the start of the disabled mode. */
     @Override
     public void disabledInit() {
         mDrive.setAcceration(0);
@@ -45,10 +45,11 @@ public class Robot extends TimedRobot {
         mDrive.setRotation(0);
     }
 
+    /** This function is called periodically when the bot is disabled. For safety use only! */
     @Override
     public void disabledPeriodic() {}
 
-    /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
+    /** This function runs at the start of the autonomous mode. */
     @Override
     public void autonomousInit() {}
 
@@ -56,7 +57,7 @@ public class Robot extends TimedRobot {
     @Override
     public void autonomousPeriodic() {}
 
-    /** This function is called at the start of teleop. */
+    /** This function is called at the start of teleop (Driver control). */
     @Override
     public void teleopInit() {
         mDrive.setAcceration(Math.abs((joystick.getRawAxis(3) - 1) / 2));
@@ -65,7 +66,7 @@ public class Robot extends TimedRobot {
         mDrive.setRotation(joystick.getRawAxis(2));
     }
 
-    /** This function is called periodically during operator control. */
+    /** This function is called periodically during teleop. */
     @Override
     public void teleopPeriodic() {}
 
