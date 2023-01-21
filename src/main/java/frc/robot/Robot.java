@@ -39,7 +39,7 @@ public class Robot extends TimedRobot {
     /** This function is called at the start of the disabled mode. */
     @Override
     public void disabledInit() {
-        mDrive.setAccleration(0);
+        mDrive.setAcceleration(0);
         mDrive.setxSpeed(0);
         mDrive.setySpeed(0);
         mDrive.setRotation(0);
@@ -60,7 +60,7 @@ public class Robot extends TimedRobot {
     /** This function is called at the start of teleop (Driver control). */
     @Override
     public void teleopInit() {
-        mDrive.setAccelration(Math.abs((joystick.getRawAxis(3) - 1) / 2));
+        mDrive.setAcceleration(Math.abs((joystick.getRawAxis(3) - 1) / 2));
         mDrive.setxSpeed(joystick.getRawAxis(0));
         mDrive.setySpeed(joystick.getRawAxis(1));
         mDrive.setRotation(joystick.getRawAxis(2));
