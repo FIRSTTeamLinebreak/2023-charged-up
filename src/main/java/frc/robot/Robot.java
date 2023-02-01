@@ -8,20 +8,20 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.commands.DriveCommand;
-import frc.robot.subsystems.Drive;
+import frc.robot.subsystems.SwerveDrive;
 
 /** The VM is configured to automatically run this class, and to call the functions corresponding to each mode, as described in the TimedRobot documentation.
  * If you change the name of this class or the package after creating this project, you must also update the build.gradle file in the project.
  */
 public class Robot extends TimedRobot {
-    private Drive mDrive;
+    private SwerveDrive mDrive;
 
     private Joystick joystick;
 
     /** This function is run when the robot is first started up. */
     @Override
     public void robotInit() {
-        mDrive = new Drive();
+        mDrive = new SwerveDrive();
         joystick = new Joystick(0);
     }
 

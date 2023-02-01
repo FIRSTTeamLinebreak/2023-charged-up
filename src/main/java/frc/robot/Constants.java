@@ -8,4 +8,45 @@ package frc.robot;
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean constants. This class should not be used for any other purpose. All constants should be declared globally (i.e. public static).
  * Do not put anything functional in this class. It is advised to statically import this class (or one of its inner classes) wherever the constants are needed, to reduce verbosity.
  */
-public final class Constants {}
+public final class Constants {
+
+    /** CAN IDs for the drive motors of each swerve module. */
+    public static final class SwerveDriveCanIds {
+        public static final int FL = 31;
+        public static final int FR = 41;
+        public static final int BL = 51;
+        public static final int BR = 61;
+    }
+
+    /** CAN IDs for the turning motors of each swerve module. */
+    public static final class SwerveTurningCanIds {
+        public static final int FL = 32;
+        public static final int FR = 42;
+        public static final int BL = 52;
+        public static final int BR = 62;
+    }
+
+    /** CAN IDs for the CAN coders of each swerve module. */
+    public static final class SwerveCanCoderIds {
+        public static final int FL = 33;
+        public static final int FR = 43;
+        public static final int BL = 53;
+        public static final int BR = 63;
+    }
+
+    /** Assorted other constants for the swerve subsystem. */
+    public static final class SwerveMotorConstants {
+        public static final double wheelDiameter = 0.0; // Meters
+        public static final double driveGearRatio = 0.0;
+        public static final double turningGearRatio = 0.0;
+
+        public static final double driveRotToMeters = driveGearRatio * Math.PI * wheelDiameter; // Drive motor rotations to meters
+        public static final double driveRpsToMps = driveRotToMeters / 60; // Drive motor rotations per second to meters per second
+
+        public static final double turningRotToRadians = turningGearRatio * 2 * Math.PI; // Turning motor rotations to radians
+        public static final double turningRpsToRps = turningRotToRadians / 60; // Turning motor rotations per second to radians per second
+        public static final double turningPidP = 0.5;
+
+        public static final double drivePhysicalMaxSpeed = 0.0; // Physical max speed of the motor in m/s
+    }
+}
