@@ -6,23 +6,29 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.DriveCommand;
+import frc.robot.commands.SwerveJoystickDriveCommand;
 import frc.robot.subsystems.SwerveDrive;
 
 /** The VM is configured to automatically run this class, and to call the functions corresponding to each mode, as described in the TimedRobot documentation.
  * If you change the name of this class or the package after creating this project, you must also update the build.gradle file in the project.
  */
 public class Robot extends TimedRobot {
-    private SwerveDrive mDrive;
 
-    private Joystick joystick;
+    private SwerveDrive swerveSubsystem;
+    private XboxController driveController;
+    private XboxController turningController;
 
     /** This function is run when the robot is first started up. */
     @Override
     public void robotInit() {
-        mDrive = new SwerveDrive();
-        joystick = new Joystick(0);
+        swerveSubsystem = SwerveDrive.getInstance();
+
+        driveController = new XboxController(1);
+        turningController = new XboxController(2);
     }
 
     /** This function is called every robot packet, no matter the mode.
@@ -39,10 +45,7 @@ public class Robot extends TimedRobot {
     /** This function is called at the start of the disabled mode. */
     @Override
     public void disabledInit() {
-        mDrive.setAcceleration(0);
-        mDrive.setxSpeed(0);
-        mDrive.setySpeed(0);
-        mDrive.setRotation(0);
+        swerveSubsystem.stop();
     }
 
     /** This function is called periodically when the bot is disabled. For safety use only! */
@@ -60,10 +63,14 @@ public class Robot extends TimedRobot {
     /** This function is called at the start of teleop (Driver control). */
     @Override
     public void teleopInit() {
-        mDrive.setAcceleration(Math.abs((joystick.getRawAxis(3) - 1) / 2));
-        mDrive.setxSpeed(joystick.getRawAxis(0));
-        mDrive.setySpeed(joystick.getRawAxis(1));
-        mDrive.setRotation(joystick.getRawAxis(2));
+        swerveSubsystem.setDefaultCommand(new SwerveJoystickDriveCommand(swerveSubsystem,
+            () -> driveController.getLeftX(),
+            () -> driveController.getLeftY(),
+            () -> turningController.getRightX(),
+            () -> true
+        ));
+
+        new JoystickButton(turningController, 1).onTrue(swerveSubsystem.zeroHeading()); // Method does not exist. May not be needed because of CAN coders
     }
 
     /** This function is called periodically during teleop. */

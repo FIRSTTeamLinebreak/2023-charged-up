@@ -1,11 +1,11 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Drive;
+import frc.robot.subsystems.SwerveDrive;
 
 /** Used in auto to control the robot. */
 public class DriveCommand extends CommandBase {
-    private Drive driveSub;
+    private SwerveDrive driveSub;
     private double xSpeed;
     private double ySpeed;
     private double rotation;
@@ -17,7 +17,7 @@ public class DriveCommand extends CommandBase {
      * @param rotation the target speed to rotate the robot in (-1, 1)
      */
     public DriveCommand(double xSpeed, double ySpeed, double rotation) {
-        driveSub = Drive.getInstance();
+        driveSub = SwerveDrive.getInstance();
         addRequirements(driveSub);
         this.xSpeed = xSpeed;
         this.ySpeed = ySpeed;
