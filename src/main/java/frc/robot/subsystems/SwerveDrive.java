@@ -50,6 +50,8 @@ public class SwerveDrive extends SubsystemBase {
                 Thread.sleep(1000);
                 gyro.reset();
             } catch (Exception e) {
+                System.out.println("Init failure!");
+                System.out.println(e);
             }
         }).start();
     }
