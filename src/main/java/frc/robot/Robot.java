@@ -70,7 +70,7 @@ public class Robot extends TimedRobot {
             () -> true
         ));
 
-        new JoystickButton(turningController, 1).onTrue(swerveSubsystem.zeroHeading()); // Method does not exist. May not be needed because of CAN coders
+        // new JoystickButton(turningController, 1).onTrue(swerveSubsystem.zeroHeading()); // Method does not exist. May not be needed because of CAN coders
     }
 
     /** This function is called periodically during teleop. */
