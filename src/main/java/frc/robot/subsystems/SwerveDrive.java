@@ -53,7 +53,7 @@ public class SwerveDrive extends SubsystemBase {
         }).start();
     }
 
-    /** Asks the drive train to move the robot. */
+    /** Run approx. every 20 ms. */
     @Override
     public void periodic() {
         SmartDashboard.putNumber("Robot heading", getHeading());
@@ -94,5 +94,20 @@ public class SwerveDrive extends SubsystemBase {
         frontRight.setState(desiredStates[1]);
         backLeft.setState(desiredStates[2]);
         backRight.setState(desiredStates[3]);
+    }
+
+    /** A temporary function to get the absolute positions of the CAN coders.
+     *
+     * @return Absolute CAN coder positions in radians (FL, FR, BL, BR)
+     */
+    public double[] getAbsoluteEncoderPositions() {
+        double[] returnVals = {
+            frontLeft.getAbsoluteEncoderRad(),
+            frontRight.getAbsoluteEncoderRad(),
+            backLeft.getAbsoluteEncoderRad(),
+            backRight.getAbsoluteEncoderRad()
+        };
+
+        return returnVals;
     }
 }

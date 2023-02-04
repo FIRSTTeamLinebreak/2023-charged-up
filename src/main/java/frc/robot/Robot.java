@@ -6,6 +6,8 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.SwerveJoystickDriveCommand;
@@ -83,5 +85,12 @@ public class Robot extends TimedRobot {
 
     /** This function is called periodically during test mode. */
     @Override
-    public void testPeriodic() {}
+    public void testPeriodic() {
+        double[] canCoderAbsPos = swerveSubsystem.getAbsoluteEncoderPositions();
+
+        SmartDashboard.putNumber("FL CAN Coder Abs Pos", canCoderAbsPos[0]);
+        SmartDashboard.putNumber("FR CAN Coder Abs Pos", canCoderAbsPos[1]);
+        SmartDashboard.putNumber("BL CAN Coder Abs Pos", canCoderAbsPos[2]);
+        SmartDashboard.putNumber("BR CAN Coder Abs Pos", canCoderAbsPos[3]);
+    }
 }
