@@ -29,8 +29,8 @@ public final class Constants {
 
         public static final double drivePhysicalMaxSpeed = Units.feetToMeters(18.0); // Physical max speed of the motor in m/s
 
-        public static final double trackWidth = 0.0; // Distance between the center of the left and right wheels @TODO: Get
-        public static final double wheelBase = 0.0; // Distance between the center of the front and back wheels @TODO: Get
+        public static final double trackWidth = Units.inchesToMeters(21); // Distance between the center of the left and right wheels in meters @TODO: Get CAD numbers
+        public static final double wheelBase = Units.inchesToMeters(23); // Distance between the center of the front and back wheels in meters @TODO: Get CAD numbers
         public static final SwerveDriveKinematics driveKinematics = new SwerveDriveKinematics(
             new Translation2d(wheelBase / 2, -trackWidth / 2),
             new Translation2d(wheelBase / 2, trackWidth / 2),
