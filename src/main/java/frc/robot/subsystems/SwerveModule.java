@@ -25,8 +25,7 @@ public class SwerveModule {
     // CAN Coder
     private final CANCoder canCoder;
     private int canCoderId;
-    private final int canCoderOffset; // Offset in radians @TODO: Determine if this is needed because the CANCoder is absolute
-    private final boolean isCanCoderReversed; // @TODO: Determine if this is needed because the CANCoder is absolute
+    private final double canCoderOffset; // Offset in radians for the CAN coder
 
     /** Creates a new swerve module.
      *
@@ -36,9 +35,8 @@ public class SwerveModule {
      * @param isTurningReversed If the turning motor is reversed
      * @param coderId CAN ID for the CAN coder within the swerve module
      * @param coderOffset The offset to get the CAN coder to true position
-     * @param isCoderReversed If the CAN coder is reversed
      */
-    public SwerveModule(int driveId, boolean isDriveReversed, int turningId, boolean isTurningReversed, int coderId, int coderOffset, boolean isCoderReversed) {
+    public SwerveModule(int driveId, boolean isDriveReversed, int turningId, boolean isTurningReversed, int coderId, double coderOffset) {
         // Drive
         driveController = new WPI_TalonFX(driveId);
         driveController.setInverted(isDriveReversed);
@@ -58,7 +56,6 @@ public class SwerveModule {
         canCoder = new CANCoder(coderId);
         canCoderId = coderId;
         canCoderOffset = coderOffset;
-        isCanCoderReversed = isCoderReversed;
 
         resetEncoders();
     }
@@ -136,6 +133,6 @@ public class SwerveModule {
      * @return CAN coder absolute position
      */
     public double getAbsoluteEncoderRad() {
-        return canCoder.getAbsolutePosition();
+        return canCoder.getAbsolutePosition() + canCoderOffset;
     }
 }

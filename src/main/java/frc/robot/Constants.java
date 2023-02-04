@@ -37,6 +37,14 @@ public final class Constants {
         public static final int BR = 63;
     }
 
+    /** CAN coder offsets. */
+    public static final class CanCoderOffsets {
+        public static final double FL = 0.0;
+        public static final double FR = 0.0;
+        public static final double BL = 0.0;
+        public static final double BR = 0.0;
+    }
+
     /** Assorted other constants for the swerve subsystem. @TODO: Rename this to SwerveSubsystemConstants */
     public static final class SwerveMotorConstants {
         public static final double wheelDiameter = 0.0; // Meters @TODO: Get this info
