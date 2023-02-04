@@ -64,15 +64,10 @@ public class SwerveJoystickDriveCommand extends CommandBase {
         ySpeed = (Math.abs(ySpeed) > OiConstants.joystickDeadzone ? ySpeed : 0.0);
         turningSpeed = (Math.abs(turningSpeed) > OiConstants.joystickDeadzone ? turningSpeed : 0.0);
 
-        // Rate limit joystick inputs (Also turn speed into -1 to 1)
-        xSpeed = xSpeedLimiter.calculate(xSpeed);
-        ySpeed = ySpeedLimiter.calculate(ySpeed);
-        turningSpeed = turningSpeedLimiter.calculate(turningSpeed);
-
-        // Convert to m/s and rad/s with a scaler(?)
-        xSpeed *= OiConstants.driveSpdScaler;
-        ySpeed *= OiConstants.driveSpdScaler;
-        turningSpeed *= OiConstants.turningSpdScaler;
+        // Make driving smoother (Using a rate limiter and then scale using the teleop max speed)
+        xSpeed = xSpeedLimiter.calculate(xSpeed) * OiConstants.driveMaxSpeed;
+        ySpeed = ySpeedLimiter.calculate(ySpeed) * OiConstants.driveMaxSpeed;
+        turningSpeed = turningSpeedLimiter.calculate(turningSpeed) * OiConstants.turningMaxSpeed;
 
         // Convert speeds to chassis speeds
         if (fieldOrientedDrivingSupplier.get()) {
