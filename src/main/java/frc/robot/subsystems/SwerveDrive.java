@@ -6,11 +6,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.CanCoderOffsets;
-import frc.robot.Constants.SwerveCanCoderIds;
-import frc.robot.Constants.SwerveDriveCanIds;
 import frc.robot.Constants.SwerveMotorConstants;
-import frc.robot.Constants.SwerveTurningCanIds;
 
 /** The subsystem that handles swerve drive. */
 public class SwerveDrive extends SubsystemBase {
@@ -39,11 +35,11 @@ public class SwerveDrive extends SubsystemBase {
 
     /** Initializes a new SwerveDrive subsystem object. */
     private SwerveDrive() {
-        // Init the swerve modules @TODO: Find offset and implement logic for if the coder is reversed
-        frontLeft = new SwerveModule(SwerveDriveCanIds.FL, false, SwerveTurningCanIds.FL, false, SwerveCanCoderIds.FL, CanCoderOffsets.FL);
-        frontRight = new SwerveModule(SwerveDriveCanIds.FR, false, SwerveTurningCanIds.FR, false, SwerveCanCoderIds.FR, CanCoderOffsets.FR);
-        backLeft = new SwerveModule(SwerveDriveCanIds.BL, false, SwerveTurningCanIds.BL, false, SwerveCanCoderIds.BL, CanCoderOffsets.BL);
-        backRight = new SwerveModule(SwerveDriveCanIds.BR, false, SwerveTurningCanIds.BR, false, SwerveCanCoderIds.BR, CanCoderOffsets.BR);
+        // Init the swerve modules @TODO: Find offsets for the CAN coders
+        frontLeft  = new SwerveModule(31, false, 32, false, 33, 0.0);
+        frontRight = new SwerveModule(41, false, 42, false, 43, 0.0);
+        backLeft   = new SwerveModule(51, false, 52, false, 53, 0.0);
+        backRight  = new SwerveModule(61, false, 62, false, 63, 0.0);
 
         gyro = new ADXRS450_Gyro();
         new Thread(() -> { // Can't call gyro.reset() right away because the gyroscope is calibrating, so create a new process and delay
