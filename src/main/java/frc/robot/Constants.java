@@ -43,10 +43,10 @@ public final class Constants {
     public static final class OiConstants {
         public static final double joystickDeadzone = 0.01; // The zone around "zero" to ignore. Prevents joystick drift from becoming an issue
 
-        public static final double driveMaxAccel = 10.0; // Max acceleration in teleop mode of the drive motors in m/s @TODO: Tune
-        public static final double driveMaxSpeed = 3.0; // Max speed in teleop mode of the drive motors in m/s @TODO: Tune
+        public static final double driveMaxAccel = 1.0; // Max acceleration in teleop mode of the drive motors in m/s^2
+        public static final double driveMaxSpeed = 10.0; // Max speed in teleop mode of the drive motors in m/s
 
-        public static final double turningMaxAccel = 10.0; // Max acceleration in teleop mode of the turning motors in m/s @TODO: Tune
-        public static final double turningMaxSpeed = 3.0; // Max speed in teleop mode of the turning motors in m/s @TODO: Tune
+        public static final double turningMaxAccel = 1.0; // Max acceleration in teleop mode of the turning motors in rad/s^2
+        public static final double turningMaxSpeed = Math.PI; // Max speed in teleop mode of the turning motors in rad/s
     }
 }
