@@ -16,7 +16,7 @@ public class SwerveDrive extends SubsystemBase {
 
     /** Get this instance.
      *
-     * @return A swerve drive subsystem
+     * @return The subsystem
      */
     public static SwerveDrive getInstance() {
         if (instance == null) {
