@@ -34,11 +34,9 @@ public class Turntable extends SubsystemBase {
         motor = new CANSparkMax(0, MotorType.kBrushless); // @TODO: Set ID
     }
 
-    /** Toggles weather the turntable is controlled via the user. */
-    public void toggleUserControl() {
-        userControl = !userControl;
-        SmartDashboard.putBoolean("User Controlled Turntable", userControl);
-
+    /** Run approx. every 20 ms. */
+    @Override
+    public void periodic() {
         if (userControl) {
             motor.set(userControlSupplier.get());
         } else {
@@ -46,21 +44,15 @@ public class Turntable extends SubsystemBase {
         }
     }
 
+    /** Toggles weather the turntable is controlled via the user. */
+    public void toggleUserControl() {
+        userControl = !userControl;
+        SmartDashboard.putBoolean("User Controlled Turntable", userControl);
+    }
+
     /** Sets the supplier for user control. */
     public void setUserControlSupplier(Supplier<Double> userSupplier) {
         userControlSupplier = userSupplier;
-    }
-
-    /** Sets the turntable to the user's desired speed from the supplier.
-     *
-     * @throws Exception Turntable not under user control
-     */
-    public void userControlPeriodic() throws Exception {
-        if (!userControl) {
-            throw new Exception("Turntable not under user control!");
-        } else {
-            motor.set(userControlSupplier.get());
-        }
     }
 
 }
