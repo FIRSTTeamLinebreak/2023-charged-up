@@ -17,7 +17,9 @@
   "java.checkstyle.configuration": "${workspaceFolder}/checkstyle.xml",
   "java.checkstyle.version": "10.6.0",
   "cSpell.words": [
+    "Brushless",
     "Checkstyle",
+    "deadzone",
     "mecanum",
     "setx",
     "sety",
