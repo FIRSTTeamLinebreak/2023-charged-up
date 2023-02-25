@@ -18,35 +18,41 @@ public final class Constants {
     public static final class SwerveMotorConstants {
         public static final double wheelDiameter = Units.inchesToMeters(4); // Meters
         public static final double driveGearRatio = 6.12;
-        public static final double turningGearRatio = 12.8;
 
         public static final double driveRotToMeters = driveGearRatio * Math.PI * wheelDiameter; // Drive motor rotations to meters
         public static final double driveRpsToMps = driveRotToMeters / 60; // Drive motor rotations per second to meters per second
 
-        public static final double turningRotToRadians = turningGearRatio * 2 * Math.PI; // Turning motor rotations to radians
-        public static final double turningRpsToRps = turningRotToRadians / 60; // Turning motor rotations per second to radians per second
-        public static final double turningPidP = 0.5; // @TODO: Tune
+        public static final double turningPidP = 0.7; // @TODO: Tune
+        public static final double turningPidI = 0.0;
+        public static final double turningPidD = 0.0;
+        public static final double turningPidTollerance = 0.05;
 
-        public static final double drivePhysicalMaxSpeed = Units.feetToMeters(18.0); // Physical max speed of the motor in m/s
+        public static final double drivePhysicalMaxSpeed = 5.486; // Physical max speed of the motor in m/s
 
-        public static final double trackWidth = Units.inchesToMeters(21); // Distance between the center of the left and right wheels in meters @TODO: Get CAD numbers
-        public static final double wheelBase = Units.inchesToMeters(23); // Distance between the center of the front and back wheels in meters @TODO: Get CAD numbers
+        public static final double trackWidth = Units.inchesToMeters(23.5); // Distance between the center of the left and right wheels in meters @TODO: Get CAD numbers
+        public static final double wheelBase = Units.inchesToMeters(21.5); // Distance between the center of the front and back wheels in meters @TODO: Get CAD numbers
+        public static final Translation2d locationFL = new Translation2d( wheelBase / 2,  trackWidth / 2);
+        public static final Translation2d locationFR = new Translation2d( wheelBase / 2, -trackWidth / 2);
+        public static final Translation2d locationBL = new Translation2d(-wheelBase / 2,  trackWidth / 2);
+        public static final Translation2d locationBR = new Translation2d(-wheelBase / 2, -trackWidth / 2);
         public static final SwerveDriveKinematics driveKinematics = new SwerveDriveKinematics(
-            new Translation2d(wheelBase / 2, -trackWidth / 2),
-            new Translation2d(wheelBase / 2, trackWidth / 2),
-            new Translation2d(-wheelBase / 2, -trackWidth / 2),
-            new Translation2d(-wheelBase / 2, trackWidth / 2)
-        );
+                locationFL,
+                locationFR,
+                locationBL,
+                locationBR);
     }
 
     /** Constants for the operator interface (OI). */
     public static final class OiConstants {
-        public static final double joystickDeadzone = 0.01; // The zone around "zero" to ignore. Prevents joystick drift from becoming an issue
+        public static final double joystickDeadzone = 0.1; // The zone around "zero" to ignore. Prevents joystick drift from becoming an issue
 
-        public static final double driveMaxAccel = 1.0; // Max acceleration in teleop mode of the drive motors in m/s^2
-        public static final double driveMaxSpeed = 10.0; // Max speed in teleop mode of the drive motors in m/s
+        public static final double driveMaxAccel = 1.5; // Max acceleration in teleop mode of the drive motors in m/s^2
+        public static final double driveMaxSpeed = 2; // Max speed in teleop mode of the drive motors in m/s
 
-        public static final double turningMaxAccel = 1.0; // Max acceleration in teleop mode of the turning motors in rad/s^2
+        public static final double turningMaxAccel = Math.PI / 2; // Max acceleration in teleop mode of the turning motors in rad/s^2
         public static final double turningMaxSpeed = Math.PI; // Max speed in teleop mode of the turning motors in rad/s
+
+        public static final double xySpeedMultiplier = 2; // @TODO: Replace this constant with a value from shuffleboard
+        public static final double turningSpeedMultiplier = Math.PI; // @TODO: Replace this constant with a value from shuffleboard
     }
 }

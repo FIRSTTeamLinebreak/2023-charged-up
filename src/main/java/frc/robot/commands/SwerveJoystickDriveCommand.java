@@ -1,6 +1,7 @@
 package frc.robot.commands;
 
-import edu.wpi.first.math.filter.SlewRateLimiter;
+import static frc.robot.Util.applyDeadzone;
+
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -17,32 +18,25 @@ public class SwerveJoystickDriveCommand extends CommandBase {
     private final Supplier<Double> ySpeedSupplier;
     private final Supplier<Double> turningSpeedSupplier;
 
-    private final SlewRateLimiter xSpeedLimiter;
-    private final SlewRateLimiter ySpeedLimiter;
-    private final SlewRateLimiter turningSpeedLimiter;
-
     private final Supplier<Boolean> fieldOrientedDrivingSupplier;
 
     /** Creates a new object to control the swerve drive with the joysticks.
      *
-     * @param swerveSubs Swerve drive object
-     * @param xSpdSup A supplier of the joystick X speed
-     * @param ySpdSup A supplier of the joystick Y speed
-     * @param turnSpdSup A supplier of the turning speed
-     * @param fieldOrientSup A supplier to say weather to drive relative to the field
+     * @param xSpeedSupplier A supplier of the joystick X speed
+     * @param ySpeedSupplier A supplier of the joystick Y speed
+     * @param turningSpeedSupplier A supplier of the turning speed
+     * @param fieldOrientedDrivingSupplier A supplier to say weather to drive relative to the field
      */
-    public SwerveJoystickDriveCommand(SwerveDrive swerveSubs, Supplier<Double> xSpdSup, Supplier<Double> ySpdSup, Supplier<Double> turnSpdSup, Supplier<Boolean> fieldOrientSup) {
-        swerveSubsystem = swerveSubs;
+    public SwerveJoystickDriveCommand(Supplier<Double> xSpeedSupplier, Supplier<Double> ySpeedSupplier, Supplier<Double> turningSpeedSupplier, Supplier<Boolean> fieldOrientedDrivingSupplier) {
+        this.swerveSubsystem = SwerveDrive.getInstance();
 
-        xSpeedSupplier = xSpdSup;
-        ySpeedSupplier = ySpdSup;
-        turningSpeedSupplier = turnSpdSup;
+        this.xSpeedSupplier = xSpeedSupplier;
+        this.ySpeedSupplier = ySpeedSupplier;
+        this.turningSpeedSupplier = turningSpeedSupplier;
 
-        xSpeedLimiter = new SlewRateLimiter(OiConstants.driveMaxAccel);
-        ySpeedLimiter = new SlewRateLimiter(OiConstants.driveMaxAccel);
-        turningSpeedLimiter = new SlewRateLimiter(OiConstants.turningMaxAccel);
+        this.fieldOrientedDrivingSupplier = fieldOrientedDrivingSupplier;
 
-        fieldOrientedDrivingSupplier = fieldOrientSup;
+        addRequirements(swerveSubsystem);
     }
 
     /** Called once when the command is initially scheduled. */
@@ -60,18 +54,18 @@ public class SwerveJoystickDriveCommand extends CommandBase {
         ChassisSpeeds chassisSpeed;
 
         // Implement a deadzone to prevent joystick drift from becoming a problem
-        xSpeed = (Math.abs(xSpeed) > OiConstants.joystickDeadzone ? xSpeed : 0.0);
-        ySpeed = (Math.abs(ySpeed) > OiConstants.joystickDeadzone ? ySpeed : 0.0);
-        turningSpeed = (Math.abs(turningSpeed) > OiConstants.joystickDeadzone ? turningSpeed : 0.0);
+        xSpeed = applyDeadzone(OiConstants.joystickDeadzone, xSpeed);
+        ySpeed = applyDeadzone(OiConstants.joystickDeadzone, ySpeed);
+        turningSpeed = applyDeadzone(OiConstants.joystickDeadzone, turningSpeed);
 
-        // Make driving smoother (Using a rate limiter and then scale using the teleop max speed)
-        xSpeed = xSpeedLimiter.calculate(xSpeed) * OiConstants.driveMaxSpeed;
-        ySpeed = ySpeedLimiter.calculate(ySpeed) * OiConstants.driveMaxSpeed;
-        turningSpeed = turningSpeedLimiter.calculate(turningSpeed) * OiConstants.turningMaxSpeed;
+        // Multiply joystick speeds by their multipliers
+        xSpeed *= OiConstants.xySpeedMultiplier;
+        ySpeed *= OiConstants.xySpeedMultiplier;
+        turningSpeed *= OiConstants.turningSpeedMultiplier;
 
         // Convert speeds to chassis speeds
         if (fieldOrientedDrivingSupplier.get()) {
-            chassisSpeed = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, turningSpeed, swerveSubsystem.getRotation2d());
+            chassisSpeed = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, -ySpeed, turningSpeed, swerveSubsystem.getRotation2d());
         } else {
             chassisSpeed = new ChassisSpeeds(xSpeed, ySpeed, turningSpeed);
         }

@@ -6,7 +6,6 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -27,7 +26,7 @@ public class Robot extends TimedRobot {
     public void robotInit() {
         swerveSubsystem = SwerveDrive.getInstance();
 
-        driveController = new XboxController(1);
+        driveController = new XboxController(0);
         turningController = new XboxController(2);
     }
 
@@ -63,19 +62,20 @@ public class Robot extends TimedRobot {
     /** This function is called at the start of teleop (Driver control). */
     @Override
     public void teleopInit() {
-        swerveSubsystem.setDefaultCommand(new SwerveJoystickDriveCommand(swerveSubsystem,
-            () -> driveController.getLeftX(),
-            () -> driveController.getLeftY(),
-            () -> turningController.getRightX(),
-            () -> true
-        ));
+        swerveSubsystem.setDefaultCommand(new SwerveJoystickDriveCommand(
+                driveController::getLeftX,
+                driveController::getLeftY,
+                driveController::getRightX,
+                () -> true));
 
         // new JoystickButton(turningController, 1).onTrue(swerveSubsystem.zeroHeading()); // Method does not exist. May not be needed because of CAN coders
     }
 
     /** This function is called periodically during teleop. */
     @Override
-    public void teleopPeriodic() {}
+    public void teleopPeriodic() {
+        double[] canCoderAbsPos = swerveSubsystem.getTurningEncoderPositions();
+    }
 
     /** This function is called at the start of the test mode. */
     @Override
@@ -86,11 +86,8 @@ public class Robot extends TimedRobot {
     /** This function is called periodically during test mode. */
     @Override
     public void testPeriodic() {
-        double[] canCoderAbsPos = swerveSubsystem.getAbsoluteEncoderPositions();
+        double[] canCoderAbsPos = swerveSubsystem.getTurningEncoderPositions();
 
-        SmartDashboard.putNumber("FL CAN Coder Abs Pos", canCoderAbsPos[0]);
-        SmartDashboard.putNumber("FR CAN Coder Abs Pos", canCoderAbsPos[1]);
-        SmartDashboard.putNumber("BL CAN Coder Abs Pos", canCoderAbsPos[2]);
-        SmartDashboard.putNumber("BR CAN Coder Abs Pos", canCoderAbsPos[3]);
+        swerveSubsystem.putData();
     }
 }
