@@ -1,11 +1,16 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.subsystems.SwerveDrive;
 
-/** A command that does literally nothing. */
-public class EmptyCommand extends CommandBase {
+/** Zeros the gyroscope of the roboRio. */
+public class SwerveZeroGyro extends CommandBase {
+    private final SwerveDrive swerveDrive;
+
     /** Creates a new command that literally does nothing. */
-    public EmptyCommand() {}
+    public SwerveZeroGyro() {
+        this.swerveDrive = SwerveDrive.getInstance();
+    }
 
     /** Called once when the command is initially scheduled. */
     @Override
@@ -13,7 +18,9 @@ public class EmptyCommand extends CommandBase {
 
     /** Called repeatedly while the command is scheduled. */
     @Override
-    public void execute() {}
+    public void execute() {
+        swerveDrive.zeroGyro();
+    }
 
     /** Called when either the command finishes normally, or when it interrupted/canceled. Do not schedule commands here that share requirements with this command. Use andThen(Command) instead.
      *
@@ -28,6 +35,6 @@ public class EmptyCommand extends CommandBase {
      */
     @Override
     public boolean isFinished() {
-        return false;
+        return true;
     }
 }

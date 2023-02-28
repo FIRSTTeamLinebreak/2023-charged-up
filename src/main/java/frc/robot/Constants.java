@@ -13,9 +13,8 @@ import edu.wpi.first.math.util.Units;
  * Do not put anything functional in this class. It is advised to statically import this class (or one of its inner classes) wherever the constants are needed, to reduce verbosity.
  */
 public final class Constants {
-
-    /** Assorted other constants for the swerve subsystem. @TODO: Rename this to SwerveSubsystemConstants */
-    public static final class SwerveMotorConstants {
+    /** Assorted other constants for the swerve subsystem. */
+    public static final class SwerveSubsystemConstants {
         public static final double wheelDiameter = Units.inchesToMeters(4); // Meters
         public static final double driveGearRatio = 6.12;
 
@@ -25,34 +24,29 @@ public final class Constants {
         public static final double turningPidP = 0.7; // @TODO: Tune
         public static final double turningPidI = 0.0;
         public static final double turningPidD = 0.0;
-        public static final double turningPidTollerance = 0.05;
+        public static final double turningPidTolerance = 0.05;
 
         public static final double drivePhysicalMaxSpeed = 5.486; // Physical max speed of the motor in m/s
 
-        public static final double trackWidth = Units.inchesToMeters(23.5); // Distance between the center of the left and right wheels in meters @TODO: Get CAD numbers
-        public static final double wheelBase = Units.inchesToMeters(21.5); // Distance between the center of the front and back wheels in meters @TODO: Get CAD numbers
+        public static final double trackWidth = Units.inchesToMeters(23.5); // Distance between the center of the left and right wheels in meters
+        public static final double wheelBase = Units.inchesToMeters(21.5); // Distance between the center of the front and back wheels in meters
         public static final Translation2d locationFL = new Translation2d( wheelBase / 2,  trackWidth / 2);
         public static final Translation2d locationFR = new Translation2d( wheelBase / 2, -trackWidth / 2);
         public static final Translation2d locationBL = new Translation2d(-wheelBase / 2,  trackWidth / 2);
         public static final Translation2d locationBR = new Translation2d(-wheelBase / 2, -trackWidth / 2);
         public static final SwerveDriveKinematics driveKinematics = new SwerveDriveKinematics(
-                locationFL,
-                locationFR,
-                locationBL,
-                locationBR);
+            locationFL,
+            locationFR,
+            locationBL,
+            locationBR
+        );
     }
 
     /** Constants for the operator interface (OI). */
     public static final class OiConstants {
-        public static final double joystickDeadzone = 0.1; // The zone around "zero" to ignore. Prevents joystick drift from becoming an issue
-
-        public static final double driveMaxAccel = 1.5; // Max acceleration in teleop mode of the drive motors in m/s^2
-        public static final double driveMaxSpeed = 2; // Max speed in teleop mode of the drive motors in m/s
-
-        public static final double turningMaxAccel = Math.PI / 2; // Max acceleration in teleop mode of the turning motors in rad/s^2
-        public static final double turningMaxSpeed = Math.PI; // Max speed in teleop mode of the turning motors in rad/s
+        public static final double joystickDeadzone = 0.1; // The circular zone around "zero" to ignore. Prevents joystick drift from becoming an issue
 
         public static final double xySpeedMultiplier = 2; // @TODO: Replace this constant with a value from shuffleboard
-        public static final double turningSpeedMultiplier = Math.PI; // @TODO: Replace this constant with a value from shuffleboard
+        public static final double turningSpeedMultiplier = 1.25 * Math.PI; // @TODO: Replace this constant with a value from shuffleboard
     }
 }

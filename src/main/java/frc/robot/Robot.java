@@ -4,30 +4,33 @@
 
 package frc.robot;
 
+import static frc.robot.Util.applyLinearDeadzone;
+
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.Constants.OiConstants;
 import frc.robot.commands.SwerveJoystickDriveCommand;
+import frc.robot.commands.SwerveZeroGyro;
 import frc.robot.subsystems.SwerveDrive;
 
 /** The VM is configured to automatically run this class, and to call the functions corresponding to each mode, as described in the TimedRobot documentation.
  * If you change the name of this class or the package after creating this project, you must also update the build.gradle file in the project.
  */
 public class Robot extends TimedRobot {
-
     private SwerveDrive swerveSubsystem;
-    private XboxController driveController;
-    private XboxController turningController;
+    private CommandXboxController driveController;
+    private CommandXboxController turningController;
 
     /** This function is run when the robot is first started up. */
     @Override
     public void robotInit() {
         swerveSubsystem = SwerveDrive.getInstance();
 
-        driveController = new XboxController(0);
-        turningController = new XboxController(2);
+        driveController = new CommandXboxController(0);
+        turningController = new CommandXboxController(1);
     }
 
     /** This function is called every robot packet, no matter the mode.
@@ -65,17 +68,18 @@ public class Robot extends TimedRobot {
         swerveSubsystem.setDefaultCommand(new SwerveJoystickDriveCommand(
                 driveController::getLeftX,
                 driveController::getLeftY,
-                driveController::getRightX,
-                () -> true));
+                () -> applyLinearDeadzone(OiConstants.joystickDeadzone, turningController.getLeftX()) == 0.0 
+                        ? driveController.getRightX() : turningController.getLeftX(),
+                () -> !driveController.getHID().getRightBumper()));
+
+        driveController.a().onTrue(new SwerveZeroGyro());
 
         // new JoystickButton(turningController, 1).onTrue(swerveSubsystem.zeroHeading()); // Method does not exist. May not be needed because of CAN coders
     }
 
     /** This function is called periodically during teleop. */
     @Override
-    public void teleopPeriodic() {
-        double[] canCoderAbsPos = swerveSubsystem.getTurningEncoderPositions();
-    }
+    public void teleopPeriodic() {}
 
     /** This function is called at the start of the test mode. */
     @Override
@@ -86,8 +90,10 @@ public class Robot extends TimedRobot {
     /** This function is called periodically during test mode. */
     @Override
     public void testPeriodic() {
-        double[] canCoderAbsPos = swerveSubsystem.getTurningEncoderPositions();
+        SwerveModuleState zero = new SwerveModuleState(0, Rotation2d.fromRadians(0));
+        SwerveModuleState[] zeros = {zero, zero, zero, zero};
+        swerveSubsystem.setStates(zeros, true);
 
-        swerveSubsystem.putData();
+        swerveSubsystem.putGyroData();
     }
 }

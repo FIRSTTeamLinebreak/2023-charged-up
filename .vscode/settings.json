@@ -17,8 +17,11 @@
   "java.checkstyle.configuration": "${workspaceFolder}/checkstyle.xml",
   "java.checkstyle.version": "10.6.0",
   "cSpell.words": [
+    "AHRS",
     "Checkstyle",
+    "Deadzone",
     "mecanum",
+    "robo",
     "setx",
     "sety",
     "Sheng",
