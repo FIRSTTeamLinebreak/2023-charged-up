@@ -10,7 +10,9 @@ Code contained in this repository was made to control our robot for the 2023 FRC
 
 This project uses [Checkstyle](https://checkstyle.org) for code style enforcement and linting along with [Google's Java Style Guide](https://google.github.io/styleguide/javaguide.html).
 
-#### VSCode Setup
+#### Manual VSCode Setup
+
+If you clone this repo, the settings are included meaning you only need to complete step 1.
 
 1. Download the checkstyle plugin by [ShengChen](https://marketplace.visualstudio.com/items?itemName=shengchen.vscode-checkstyle)
 2. Set the configuration file to `${workspaceFolder}/checkstyle.xml`

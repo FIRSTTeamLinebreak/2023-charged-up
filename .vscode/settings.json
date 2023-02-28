@@ -18,8 +18,9 @@
   "java.checkstyle.version": "10.6.0",
   "cSpell.words": [
     "AHRS",
+    "Brushless",
     "Checkstyle",
-    "Deadzone",
+    "deadzone",
     "mecanum",
     "robo",
     "setx",
