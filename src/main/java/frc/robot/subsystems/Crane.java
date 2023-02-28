@@ -7,7 +7,6 @@ import java.util.function.Supplier;
 
 /** The subsystem that handles the crane mechanism for placing game pieces. */
 public class Crane extends SubsystemBase {
-
     // Define the singleton
     private static Crane instance;
 
@@ -61,5 +60,4 @@ public class Crane extends SubsystemBase {
         armMotorSpeedSupplier = arm;
         clawMotorSpeedSupplier = claw;
     }
-
 }

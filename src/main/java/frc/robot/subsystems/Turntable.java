@@ -8,7 +8,6 @@ import java.util.function.Supplier;
 
 /** The subsystem that handles the turntable mechanism. */
 public class Turntable extends SubsystemBase {
-
     // Define the singleton
     private static Turntable instance;
 
@@ -54,5 +53,4 @@ public class Turntable extends SubsystemBase {
     public void setUserControlSupplier(Supplier<Double> userSupplier) {
         userControlSupplier = userSupplier;
     }
-
 }

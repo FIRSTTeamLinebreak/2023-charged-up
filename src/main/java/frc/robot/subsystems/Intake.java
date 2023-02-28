@@ -8,7 +8,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 /** The subsystem that handles the intake mechanism for game pieces. */
 public class Intake extends SubsystemBase {
-
     // Define the singleton
     private static Intake instance;
 
@@ -90,5 +89,4 @@ public class Intake extends SubsystemBase {
         deployed = !deployed;
         SmartDashboard.putBoolean("Intake Deployed", deployed);
     }
-
 }

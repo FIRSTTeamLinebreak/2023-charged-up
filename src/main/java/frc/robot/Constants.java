@@ -30,8 +30,8 @@ public final class Constants {
 
         public static final double trackWidth = Units.inchesToMeters(23.5); // Distance between the center of the left and right wheels in meters
         public static final double wheelBase = Units.inchesToMeters(21.5); // Distance between the center of the front and back wheels in meters
-        public static final Translation2d locationFL = new Translation2d( wheelBase / 2,  trackWidth / 2);
-        public static final Translation2d locationFR = new Translation2d( wheelBase / 2, -trackWidth / 2);
+        public static final Translation2d locationFL = new Translation2d(wheelBase / 2,  trackWidth / 2);
+        public static final Translation2d locationFR = new Translation2d(wheelBase / 2, -trackWidth / 2);
         public static final Translation2d locationBL = new Translation2d(-wheelBase / 2,  trackWidth / 2);
         public static final Translation2d locationBR = new Translation2d(-wheelBase / 2, -trackWidth / 2);
         public static final SwerveDriveKinematics driveKinematics = new SwerveDriveKinematics(
