@@ -81,11 +81,11 @@ public class SwerveModule {
         if (log) {
             SmartDashboard.putString(
                 "Swerve " + Integer.toString(driveController.getDeviceID() - 10).charAt(0) + " Target State", 
-                "Speed: " + state.speedMetersPerSecond + ", Rotation: " + state.angle.getRadians()
+                String.format("Speed: %.3f, Rotation: %.3f", state.speedMetersPerSecond, state.angle.getRadians())
             );
             SmartDashboard.putString(
                 "Swerve " + Integer.toString(driveController.getDeviceID() - 10).charAt(0) + " Current State", 
-                "Speed: " + getDriveVelocity() + ", Rotation: " + getTurningPositionReadable()
+                String.format("Speed: %.3f, Rotation: %.3f", getDriveVelocity(), getTurningPositionReadable())
             );
         }
         
