@@ -32,7 +32,7 @@ public class SwerveDrive extends SubsystemBase {
     private final SwerveModule backRight;
 
     private final AHRS gyro;
-    private final double gyroOffset = 88.0;
+    private final double gyroOffset = -92.0;
 
     /** Initializes a new SwerveDrive subsystem object. */
     private SwerveDrive() {
