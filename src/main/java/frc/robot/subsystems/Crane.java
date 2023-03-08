@@ -2,8 +2,8 @@ package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import java.util.function.Supplier;
 
 /** The subsystem that handles the crane mechanism for placing game pieces. */
 public class Crane extends SubsystemBase {
@@ -24,40 +24,130 @@ public class Crane extends SubsystemBase {
 
     // Pivot
     private final CANSparkMax pivotMotor;
-    private Supplier<Double> pivotMotorSpeedSupplier;
+    private final DigitalInput pivotSwitch;
+    private double pivotSpeed = 0.0;
+    // @TODO: Set all of these
+    public static final double pivotFrontTop = 0.0;
+    public static final double pivotFrontMid = 6.0;
+    public static final double pivotFrontBottom = 0.0;
+    public static final double pivotIntake = 0.0;
+    public static final double pivotMax = 0.0;
+    public static final double pivotMin = 0.0;
 
     // Arm
     private final CANSparkMax armMotor;
-    private Supplier<Double> armMotorSpeedSupplier;
+    private final DigitalInput armSwitch;
+    private double armSpeed = 0.0;
+    // @TODO: Set all of these
+    public static final double armMax = 0.0;
+    public static final double armMid = 0.0;
+    public static final double armMin = 0.0;
+    public static final double armIntake = 0.0;
+    public static final double armGround = 0.0;
+    public static final double armHumanLoad = 0.0;
+    public static final double armDropLow = 0.0;
+    public static final double armDropMid = 0.0;
+    public static final double armDropHigh = 0.0;
 
     // Claw
     private final CANSparkMax clawMotor;
-    private Supplier<Double> clawMotorSpeedSupplier;
+    private final CANSparkMax clawMotorFollower;
+    private double clawSpeed = 0.0;
 
     /** Initializes a new Crane subsystem object. */
     private Crane() {
-        pivotMotor = new CANSparkMax(0, MotorType.kBrushless); // @TODO: Set ID
-        pivotMotorSpeedSupplier = () -> 0.0;
+        pivotMotor = new CANSparkMax(13, MotorType.kBrushless);
+        pivotSwitch = new DigitalInput(0);
 
-        armMotor = new CANSparkMax(0, MotorType.kBrushless); // @TODO: Set ID
-        armMotorSpeedSupplier = () -> 0.0;
+        armMotor = new CANSparkMax(14, MotorType.kBrushless);
+        armSwitch = new DigitalInput(1);
 
-        clawMotor = new CANSparkMax(0, MotorType.kBrushless); // @TODO: Set ID
-        clawMotorSpeedSupplier = () -> 0.0;
+        clawMotor = new CANSparkMax(15, MotorType.kBrushless);
+        clawMotorFollower = new CANSparkMax(16, MotorType.kBrushless);
+        clawMotorFollower.follow(clawMotor, true);
     }
 
     /** Run approx. every 20 ms. */
     @Override
     public void periodic() {
-        pivotMotor.set(pivotMotorSpeedSupplier.get());
-        armMotor.set(armMotorSpeedSupplier.get());
-        clawMotor.set(clawMotorSpeedSupplier.get());
+        pivotMotor.set(pivotSpeed);
+        armMotor.set(armSpeed);
+        clawMotor.set(clawSpeed);
     }
 
-    /** Sets the suppliers for the pivot, arm, and claw motors. */
-    public void setSuppliers(Supplier<Double> pivot, Supplier<Double> arm, Supplier<Double> claw) {
-        pivotMotorSpeedSupplier = pivot;
-        armMotorSpeedSupplier = arm;
-        clawMotorSpeedSupplier = claw;
+    /** Zeros all motor speeds. */
+    public void stop() {
+        pivotSpeed = 0.0;
+        armSpeed = 0.0;
+        clawSpeed = 0.0;
+    }
+
+    /** Zeros the pivot encoder. */
+    public void zeroPivotEncoder() {
+        pivotMotor.getEncoder().setPosition(0);
+    }
+
+    /** Zeros the arm encoder. */
+    public void zeroArmEncoder() {
+        armMotor.getEncoder().setPosition(0);
+    }
+
+    /** Weather the pivot limit switch is pressed.
+     *
+     * @return boolean
+     */
+    public boolean getPivotSwitch() {
+        return pivotSwitch.get();
+    }
+
+    /** Weather the arm limit switch is pressed.
+     *
+     * @return boolean
+     */
+    public boolean getArmSwitch() {
+        return armSwitch.get();
+    }
+
+    /** Gets the position of the pivot motor.
+     *
+     * @return Position in revolutions
+     */
+    public double getPivotPosition() {
+        return pivotMotor.getEncoder().getPosition() * -1;
+    }
+
+    /** Gets the position of the arm motor.
+     *
+     * @return Position in revolutions
+     */
+    public double getArmPosition() {
+        return armMotor.getEncoder().getPosition();
+    }
+
+    /**
+     * Sets the speed of the pivot motor.
+     *
+     * @param speed a value from -1 to 1 where 1 is max speed
+     */
+    public void setPivotSpeed(double speed) {
+        pivotSpeed = speed;
+    }
+
+    /**
+     * Sets the speed of the arm motor.
+     *
+     * @param speed a value from -1 to 1 where 1 is max speed
+     */
+    public void setArmSpeed(double speed) {
+        armSpeed = speed;
+    }
+
+    /**
+     * Sets the speed of the claw motor.
+     *
+     * @param speed a value from -1 to 1 where 1 is max speed
+     */
+    public void setClawSpeed(double speed) {
+        clawSpeed = speed;
     }
 }

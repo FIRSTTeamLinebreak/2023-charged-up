@@ -9,11 +9,13 @@ import static frc.robot.Util.applyLinearDeadzone;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.OiConstants;
+import frc.robot.commands.CraneControlCommand;
 import frc.robot.commands.SwerveJoystickDriveCommand;
-import frc.robot.commands.SwerveZeroGyro;
+import frc.robot.subsystems.Crane;
 import frc.robot.subsystems.SwerveDrive;
 
 /** The VM is configured to automatically run this class, and to call the functions corresponding to each mode, as described in the TimedRobot documentation.
@@ -21,13 +23,18 @@ import frc.robot.subsystems.SwerveDrive;
  */
 public class Robot extends TimedRobot {
     private SwerveDrive swerveSubsystem;
+    private Crane craneSubsystem;
     private CommandXboxController driveController;
     private CommandXboxController turningController;
+
+    private Double cranePivotCurrentTargetState = 0.0;
+    private Double craneArmCurrentTargetState = 0.0;
 
     /** This function is run when the robot is first started up. */
     @Override
     public void robotInit() {
         swerveSubsystem = SwerveDrive.getInstance();
+        craneSubsystem = Crane.getInstance();
 
         driveController = new CommandXboxController(0);
         turningController = new CommandXboxController(1);
@@ -48,6 +55,7 @@ public class Robot extends TimedRobot {
     @Override
     public void disabledInit() {
         swerveSubsystem.stop();
+        craneSubsystem.stop();
     }
 
     /** This function is called periodically when the bot is disabled. For safety use only! */
@@ -69,12 +77,27 @@ public class Robot extends TimedRobot {
             driveController::getLeftX,
             driveController::getLeftY,
             () -> applyLinearDeadzone(OiConstants.joystickDeadzone, turningController.getLeftX()) == 0.0 ? driveController.getRightX() : turningController.getLeftX(), // Allow either driver to turn the robot, but have the turning controller override the drive controller
-            () -> !driveController.getHID().getRightBumper())
-        );
+            () -> !driveController.getHID().getRightBumper()
+        ));
 
-        driveController.a().onTrue(new SwerveZeroGyro());
+        if (turningController.getHID().getYButtonPressed()) {
+            cranePivotCurrentTargetState = Crane.PIVOT_TOP;
+            craneArmCurrentTargetState = Crane.ARM_TOP;
+        } else if (turningController.getHID().getBButtonPressed()) {
+            cranePivotCurrentTargetState = Crane.PIVOT_MIDDLE;
+            craneArmCurrentTargetState = Crane.ARM_MIDDLE;
+        } else if (turningController.getHID().getAButtonPressed()) {
+            cranePivotCurrentTargetState = Crane.PIVOT_FRONT;
+            craneArmCurrentTargetState = Crane.ARM_FRONT;
+        }
 
-        // new JoystickButton(turningController, 1).onTrue(swerveSubsystem.zeroHeading()); // Method does not exist. May not be needed because of CAN coders
+        craneSubsystem.setDefaultCommand(new CraneControlCommand(
+            () -> cranePivotCurrentTargetState, 
+            () -> craneArmCurrentTargetState,
+            () -> turningController.getHID().getStartButton() ? 0.3 : turningController.getHID().getBackButton() ? -0.3 : 0
+        ));
+
+        // driveController.a().onTrue(new SwerveZeroGyro());
     }
 
     /** This function is called periodically during teleop. */
@@ -94,6 +117,11 @@ public class Robot extends TimedRobot {
         SwerveModuleState[] zeros = {zero, zero, zero, zero};
         swerveSubsystem.setStates(zeros, true);
 
-        swerveSubsystem.putGyroData();
+        SmartDashboard.putNumber("Pivot Position", craneSubsystem.getPivotPosition());
+        SmartDashboard.putBoolean("Pivot Switch", craneSubsystem.getPivotSwitch());
+        if (turningController.getHID().getAButtonPressed()) {
+            craneSubsystem.zeroPivotEncoder();
+        }
+        craneSubsystem.setPivotSpeed(turningController.getLeftY() * 0.1);
     }
 }
