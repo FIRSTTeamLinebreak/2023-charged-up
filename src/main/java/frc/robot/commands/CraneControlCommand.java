@@ -5,7 +5,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Crane;
 import java.util.function.Supplier;
 
-/** The Command used to control the crane. */
+/** Controls the crane while in teleop. */
 public class CraneControlCommand extends CommandBase {
     private final Crane craneSub;
 
@@ -16,7 +16,12 @@ public class CraneControlCommand extends CommandBase {
     private final PIDController pivotPidController;
     private final PIDController armPidController;
 
-    /** Creates the Command used for teleop control of the robot arm. */
+    /** Creates a command to control the crane while in teleop.
+     *
+     * @param pivotPositionSupplier Supplier for pivot motor speed [-1, 1]
+     * @param armPositionSupplier Supplier for arm motor speed [-1, 1]
+     * @param clawSpeedSupplier Supplier for claw motor speed [-1, 1]
+     */
     public CraneControlCommand(Supplier<Double> pivotPositionSupplier, Supplier<Double> armPositionSupplier, Supplier<Double> clawSpeedSupplier) {
         this.pivotPositionSupplier = pivotPositionSupplier;
         this.armPositionSupplier = armPositionSupplier;
@@ -53,7 +58,7 @@ public class CraneControlCommand extends CommandBase {
 
     /** Whether the command has finished. If true, calls end().
      *
-     * @return Weather this command is done.
+     * @return boolean
      */
     @Override
     public boolean isFinished() {

@@ -2,9 +2,9 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
-/** A command that does literally nothing. */
+/** Does literally nothing. */
 public class EmptyCommand extends CommandBase {
-    /** Creates a new command that literally does nothing. */
+    /** Creates a command that does literally nothing. */
     public EmptyCommand() {}
 
     /** Called once when the command is initially scheduled. */
@@ -24,7 +24,7 @@ public class EmptyCommand extends CommandBase {
 
     /** Whether the command has finished. If true, calls end().
      *
-     * @return Weather this command is done.
+     * @return boolean
      */
     @Override
     public boolean isFinished() {

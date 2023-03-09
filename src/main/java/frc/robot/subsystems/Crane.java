@@ -124,28 +124,25 @@ public class Crane extends SubsystemBase {
         return armMotor.getEncoder().getPosition();
     }
 
-    /**
-     * Sets the speed of the pivot motor.
+    /** Sets the speed of the pivot motor.
      *
-     * @param speed a value from -1 to 1 where 1 is max speed
+     * @param speed Speed from [-1, 1]
      */
     public void setPivotSpeed(double speed) {
         pivotSpeed = speed;
     }
 
-    /**
-     * Sets the speed of the arm motor.
+    /** Sets the speed of the arm motor.
      *
-     * @param speed a value from -1 to 1 where 1 is max speed
+     * @param speed Speed from [-1, 1]
      */
     public void setArmSpeed(double speed) {
         armSpeed = speed;
     }
 
-    /**
-     * Sets the speed of the claw motor.
+    /** Sets the speed of the claw motor.
      *
-     * @param speed a value from -1 to 1 where 1 is max speed
+     * @param speed Speed from [-1, 1]
      */
     public void setClawSpeed(double speed) {
         clawSpeed = speed;

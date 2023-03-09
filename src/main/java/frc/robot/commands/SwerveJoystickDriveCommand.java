@@ -11,7 +11,7 @@ import frc.robot.Constants.SwerveSubsystemConstants;
 import frc.robot.subsystems.SwerveDrive;
 import java.util.function.Supplier;
 
-/** A command to control the swerve subsystem via joysticks. */
+/** Controls the swerve subsystem via joysticks. */
 public class SwerveJoystickDriveCommand extends CommandBase {
     private final SwerveDrive swerveSubsystem;
 
@@ -21,7 +21,7 @@ public class SwerveJoystickDriveCommand extends CommandBase {
 
     private final Supplier<Boolean> fieldOrientedDrivingSupplier;
 
-    /** Creates a new object to control the swerve drive with the joysticks.
+    /** Creates a new command to control the swerve subsystem via joysticks.
      *
      * @param xSpeedSupplier A supplier of the joystick X speed
      * @param ySpeedSupplier A supplier of the joystick Y speed
@@ -86,7 +86,7 @@ public class SwerveJoystickDriveCommand extends CommandBase {
 
     /** Whether the command has finished. If true, calls end() and stops the command from executing
      *
-     * @return Weather this command is done.
+     * @return boolean
      */
     @Override
     public boolean isFinished() {

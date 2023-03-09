@@ -3,11 +3,11 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.SwerveDrive;
 
-/** Zeros the gyroscope of the roboRio. */
+/** Zeros the gyroscope of the swerve subsystem. */
 public class SwerveZeroGyro extends CommandBase {
     private final SwerveDrive swerveDrive;
 
-    /** Creates a new command that literally does nothing. */
+    /** Creates a command to zero the gyroscope of the swerve subsystem. */
     public SwerveZeroGyro() {
         this.swerveDrive = SwerveDrive.getInstance();
     }
@@ -31,7 +31,7 @@ public class SwerveZeroGyro extends CommandBase {
 
     /** Whether the command has finished. If true, calls end().
      *
-     * @return Weather this command is done.
+     * @return boolean
      */
     @Override
     public boolean isFinished() {
