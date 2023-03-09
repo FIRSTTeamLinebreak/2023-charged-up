@@ -22,13 +22,18 @@ import frc.robot.subsystems.SwerveDrive;
  * If you change the name of this class or the package after creating this project, you must also update the build.gradle file in the project.
  */
 public class Robot extends TimedRobot {
-    private SwerveDrive swerveSubsystem;
-    private Crane craneSubsystem;
+    // Controllers
     private CommandXboxController driveController;
     private CommandXboxController turningController;
 
-    private Double cranePivotCurrentTargetState = 0.0;
-    private Double craneArmCurrentTargetState = 0.0;
+    // Subsystems
+    private SwerveDrive swerveSubsystem;
+
+    // Crane
+    private Crane craneSubsystem;
+
+    private Double cranePivotTargetPosition = 0.0;
+    private Double craneArmTargetPosition = 0.0;
 
     /** This function is run when the robot is first started up. */
     @Override
@@ -82,22 +87,22 @@ public class Robot extends TimedRobot {
         ));
 
         // Crane control
+        if (turningController.getHID().getYButtonPressed()) { // Max/top set point
+            cranePivotTargetPosition = Crane.pivotFrontTop;
+            craneArmTargetPosition = Crane.armMax;
+        } else if (turningController.getHID().getBButtonPressed()) { // Mid set point
+            cranePivotTargetPosition = Crane.pivotFrontMid;
+            craneArmTargetPosition = Crane.armMid;
+        } else if (turningController.getHID().getAButtonPressed()) { // Min/bottom set point
+            cranePivotTargetPosition = Crane.pivotFrontBottom;
+            craneArmTargetPosition = Crane.armMin;
+        }
+
         craneSubsystem.setDefaultCommand(new CraneControlCommand(
-            () -> cranePivotCurrentTargetState,
-            () -> craneArmCurrentTargetState,
+            () -> cranePivotTargetPosition,
+            () -> craneArmTargetPosition,
             () -> turningController.getHID().getStartButton() ? 0.3 : turningController.getHID().getBackButton() ? -0.3 : 0
         ));
-
-        if (turningController.getHID().getYButtonPressed()) { // Max/top set point
-            cranePivotCurrentTargetState = Crane.pivotFrontTop;
-            craneArmCurrentTargetState = Crane.armMax;
-        } else if (turningController.getHID().getBButtonPressed()) { // Mid setp oint
-            cranePivotCurrentTargetState = Crane.pivotFrontMid;
-            craneArmCurrentTargetState = Crane.armMid;
-        } else if (turningController.getHID().getAButtonPressed()) { // Min/bottom set point
-            cranePivotCurrentTargetState = Crane.pivotFrontBottom;
-            craneArmCurrentTargetState = Crane.armMin;
-        }
     }
 
     /** This function is called periodically during teleop. */

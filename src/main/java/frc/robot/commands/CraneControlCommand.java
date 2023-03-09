@@ -18,9 +18,9 @@ public class CraneControlCommand extends CommandBase {
 
     /** Creates a command to control the crane while in teleop.
      *
-     * @param pivotPositionSupplier Supplier for pivot motor speed [-1, 1]
-     * @param armPositionSupplier Supplier for arm motor speed [-1, 1]
-     * @param clawSpeedSupplier Supplier for claw motor speed [-1, 1]
+     * @param pivotPositionSupplier Supplier for pivot position
+     * @param armPositionSupplier Supplier for arm position
+     * @param clawSpeedSupplier Supplier for claw position
      */
     public CraneControlCommand(Supplier<Double> pivotPositionSupplier, Supplier<Double> armPositionSupplier, Supplier<Double> clawSpeedSupplier) {
         this.pivotPositionSupplier = pivotPositionSupplier;
