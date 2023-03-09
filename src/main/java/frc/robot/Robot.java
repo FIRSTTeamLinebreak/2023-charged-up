@@ -73,6 +73,7 @@ public class Robot extends TimedRobot {
     /** This function is called at the start of teleop (Driver control). */
     @Override
     public void teleopInit() {
+        // Swerve control
         swerveSubsystem.setDefaultCommand(new SwerveJoystickDriveCommand(
             driveController::getLeftX,
             driveController::getLeftY,
@@ -80,24 +81,23 @@ public class Robot extends TimedRobot {
             () -> !driveController.getHID().getRightBumper()
         ));
 
-        if (turningController.getHID().getYButtonPressed()) {
-            cranePivotCurrentTargetState = Crane.PIVOT_TOP;
-            craneArmCurrentTargetState = Crane.ARM_TOP;
-        } else if (turningController.getHID().getBButtonPressed()) {
-            cranePivotCurrentTargetState = Crane.PIVOT_MIDDLE;
-            craneArmCurrentTargetState = Crane.ARM_MIDDLE;
-        } else if (turningController.getHID().getAButtonPressed()) {
-            cranePivotCurrentTargetState = Crane.PIVOT_FRONT;
-            craneArmCurrentTargetState = Crane.ARM_FRONT;
-        }
-
+        // Crane control
         craneSubsystem.setDefaultCommand(new CraneControlCommand(
-            () -> cranePivotCurrentTargetState, 
+            () -> cranePivotCurrentTargetState,
             () -> craneArmCurrentTargetState,
             () -> turningController.getHID().getStartButton() ? 0.3 : turningController.getHID().getBackButton() ? -0.3 : 0
         ));
 
-        // driveController.a().onTrue(new SwerveZeroGyro());
+        if (turningController.getHID().getYButtonPressed()) { // Max/top set point
+            cranePivotCurrentTargetState = Crane.pivotFrontTop;
+            craneArmCurrentTargetState = Crane.armMax;
+        } else if (turningController.getHID().getBButtonPressed()) { // Mid setp oint
+            cranePivotCurrentTargetState = Crane.pivotFrontMid;
+            craneArmCurrentTargetState = Crane.armMid;
+        } else if (turningController.getHID().getAButtonPressed()) { // Min/bottom set point
+            cranePivotCurrentTargetState = Crane.pivotFrontBottom;
+            craneArmCurrentTargetState = Crane.armMin;
+        }
     }
 
     /** This function is called periodically during teleop. */

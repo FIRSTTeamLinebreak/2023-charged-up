@@ -30,7 +30,7 @@ public class Crane extends SubsystemBase {
     public static final double pivotFrontTop = 0.0;
     public static final double pivotFrontMid = 6.0;
     public static final double pivotFrontBottom = 0.0;
-    public static final double pivotIntake = 0.0;
+    public static final double pivotTurntableIntake = 0.0;
     public static final double pivotMax = 0.0;
     public static final double pivotMin = 0.0;
 
@@ -42,8 +42,8 @@ public class Crane extends SubsystemBase {
     public static final double armMax = 0.0;
     public static final double armMid = 0.0;
     public static final double armMin = 0.0;
-    public static final double armIntake = 0.0;
-    public static final double armGround = 0.0;
+    public static final double armTurntableIntake = 0.0;
+    public static final double armGroundIntake = 0.0;
     public static final double armHumanLoad = 0.0;
     public static final double armDropLow = 0.0;
     public static final double armDropMid = 0.0;
