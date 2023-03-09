@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.OiConstants;
+import frc.robot.commands.CraneAutoZero;
 import frc.robot.commands.CraneControlCommand;
 import frc.robot.commands.SwerveJoystickDriveCommand;
 import frc.robot.subsystems.Crane;
@@ -103,6 +104,9 @@ public class Robot extends TimedRobot {
             () -> craneArmTargetPosition,
             () -> turningController.getHID().getStartButton() ? 0.3 : turningController.getHID().getBackButton() ? -0.3 : 0
         ));
+
+        // Other commands
+        driveController.x().onTrue(new CraneAutoZero());
     }
 
     /** This function is called periodically during teleop. */
