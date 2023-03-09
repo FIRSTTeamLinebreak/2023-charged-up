@@ -4,7 +4,6 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import java.util.function.Supplier;
 
 /** The subsystem that handles the turntable mechanism. */
 public class Turntable extends SubsystemBase {
@@ -24,9 +23,10 @@ public class Turntable extends SubsystemBase {
     }
 
     private final CANSparkMax motor;
-    private final double motorTargetSpeed = 0.5; // Speed of turntable [-1, 1]. @TODO: Tune
+    private final double targetSpeed = 0.5; // Speed of turntable [-1, 1]. @TODO: Tune
+
     private boolean userControl = false; // Weather the turntable is controlled via the user
-    private Supplier<Double> userControlSupplier; // A supplier of doubles for user control
+    private double userControlSpeed = 0.0; // Speed of the turntable [-1, 1], while the turntable is under user control
 
     /** Initializes a new Turntable subsystem object. */
     private Turntable() {
@@ -36,11 +36,7 @@ public class Turntable extends SubsystemBase {
     /** Run approx. every 20 ms. */
     @Override
     public void periodic() {
-        if (userControl) {
-            motor.set(userControlSupplier.get());
-        } else {
-            motor.set(motorTargetSpeed);
-        }
+        motor.set(userControl ? userControlSpeed : targetSpeed);
     }
 
     /** Toggles weather the turntable is controlled via the user. */
@@ -49,8 +45,10 @@ public class Turntable extends SubsystemBase {
         SmartDashboard.putBoolean("User Controlled Turntable", userControl);
     }
 
-    /** Sets the supplier for user control. */
-    public void setUserControlSupplier(Supplier<Double> userSupplier) {
-        userControlSupplier = userSupplier;
+    /** Sets the desired speed for the turntable while under user control
+     * @param speed The desired speed [-1, 1]
+     */
+    public void setUserControlSpeed(double speed) {
+        userControlSpeed = speed;
     }
 }
