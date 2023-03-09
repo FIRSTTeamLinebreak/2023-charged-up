@@ -16,7 +16,7 @@ public class CraneControlCommand extends CommandBase {
     private final PIDController pivotPidController;
     private final PIDController armPidController;
 
-    /** Creates the Command used for telop control of the robot arm. */
+    /** Creates the Command used for teleop control of the robot arm. */
     public CraneControlCommand(Supplier<Double> pivotPositionSupplier, Supplier<Double> armPositionSupplier, Supplier<Double> clawSpeedSupplier) {
         this.pivotPositionSupplier = pivotPositionSupplier;
         this.armPositionSupplier = armPositionSupplier;
@@ -42,10 +42,7 @@ public class CraneControlCommand extends CommandBase {
         craneSub.setClawSpeed(clawSpeedSupplier.get());
     }
 
-    /**
-     * Called when either the command finishes normally, or when it
-     * interrupted/canceled. Do not schedule commands here that share requirements
-     * with this command. Use andThen(Command) instead.
+    /** Called when either the command finishes normally, or when it interrupted/canceled. Do not schedule commands here that share requirements with this command. Use andThen(Command) instead.
      *
      * @param interrupted Weather this command was interrupted
      */
@@ -54,8 +51,7 @@ public class CraneControlCommand extends CommandBase {
         craneSub.stop();
     }
 
-    /**
-     * Whether the command has finished. If true, calls end().
+    /** Whether the command has finished. If true, calls end().
      *
      * @return Weather this command is done.
      */
