@@ -14,13 +14,13 @@ public class SwerveZeroGyro extends CommandBase {
 
     /** Called once when the command is initially scheduled. */
     @Override
-    public void initialize() {}
+    public void initialize() {
+        swerveDrive.zeroGyro();
+    }
 
     /** Called repeatedly while the command is scheduled. */
     @Override
-    public void execute() {
-        swerveDrive.zeroGyro();
-    }
+    public void execute() {}
 
     /** Called when either the command finishes normally, or when it interrupted/canceled. Do not schedule commands here that share requirements with this command. Use andThen(Command) instead.
      *
