@@ -85,8 +85,7 @@ public class Robot extends TimedRobot {
             driveController::getLeftX,
             () -> driveController.getLeftY() * -1,
             () -> applyLinearDeadzone(OiConstants.joystickDeadzone, turningController.getLeftX()) == 0.0 ? driveController.getRightX() : turningController.getLeftX(), // Allow either driver to turn the robot, but have the turning controller override the drive controller
-            () -> !driveController.getHID().getRightBumper(),
-            () -> applyLinearDeadzone(OiConstants.triggerDeadzone, driveController.getLeftTriggerAxis()) > 0
+            () -> !driveController.getHID().getRightBumper()
         ));
 
         // Crane control

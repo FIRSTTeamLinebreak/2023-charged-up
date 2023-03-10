@@ -21,19 +21,14 @@ public class SwerveJoystickDriveCommand extends CommandBase {
 
     private final Supplier<Boolean> fieldOrientedDrivingSupplier;
 
-    private final Supplier<Boolean> slowSpeedMultiplierSupplier;
-    private final double normalSpeedMultiplier = 5; // The XY speed multiplier for normal operation
-    private final double slowSpeedMultiplier = 1.5; // The XY speed multiplier when using the slow button
-
     /** Creates a new command to control the swerve subsystem via joysticks.
      *
      * @param xSpeedSupplier A supplier of the joystick X speed
      * @param ySpeedSupplier A supplier of the joystick Y speed
      * @param turningSpeedSupplier A supplier of the turning speed
      * @param fieldOrientedDrivingSupplier A supplier to say weather to drive relative to the field
-     * @param slowSpeedMultiplierSupplier A supplier to say weather to use the slower speed multiplier
      */
-    public SwerveJoystickDriveCommand(Supplier<Double> xSpeedSupplier, Supplier<Double> ySpeedSupplier, Supplier<Double> turningSpeedSupplier, Supplier<Boolean> fieldOrientedDrivingSupplier, Supplier<Boolean> slowSpeedMultiplierSupplier) {
+    public SwerveJoystickDriveCommand(Supplier<Double> xSpeedSupplier, Supplier<Double> ySpeedSupplier, Supplier<Double> turningSpeedSupplier, Supplier<Boolean> fieldOrientedDrivingSupplier) {
         this.swerveSubsystem = SwerveDrive.getInstance();
 
         this.xSpeedSupplier = xSpeedSupplier;
@@ -41,7 +36,6 @@ public class SwerveJoystickDriveCommand extends CommandBase {
         this.turningSpeedSupplier = turningSpeedSupplier;
 
         this.fieldOrientedDrivingSupplier = fieldOrientedDrivingSupplier;
-        this.slowSpeedMultiplierSupplier = slowSpeedMultiplierSupplier;
 
         addRequirements(swerveSubsystem);
     }
@@ -65,8 +59,8 @@ public class SwerveJoystickDriveCommand extends CommandBase {
         turningSpeed = applyLinearDeadzone(OiConstants.joystickDeadzone, turningSpeed);
 
         // Multiply joystick speeds by their multipliers
-        xSpeed *= slowSpeedMultiplierSupplier.get() ? slowSpeedMultiplier : normalSpeedMultiplier;
-        ySpeed *= slowSpeedMultiplierSupplier.get() ? slowSpeedMultiplier : normalSpeedMultiplier;
+        xSpeed *= OiConstants.xySpeedMultiplier;
+        ySpeed *= OiConstants.xySpeedMultiplier;
         turningSpeed *= OiConstants.turningSpeedMultiplier;
 
         // Convert speeds to chassis speeds

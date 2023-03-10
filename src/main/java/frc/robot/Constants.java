@@ -45,7 +45,8 @@ public final class Constants {
     /** Constants for the operator interface (OI). */
     public static final class OiConstants {
         public static final double joystickDeadzone = 0.1; // The circular zone around "zero" to ignore. Prevents joystick drift from becoming an issue
-        public static final double triggerDeadzone = 0.1; // Deadzone on the triggers. Prevents drift from becoming an issue
+
+        public static final double xySpeedMultiplier = 5; // Speed multiplier in m/s(?)
         public static final double turningSpeedMultiplier = 1.25 * Math.PI;
     }
 }
