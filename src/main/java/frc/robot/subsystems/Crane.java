@@ -113,7 +113,7 @@ public class Crane extends SubsystemBase {
      * @return Position in revolutions
      */
     public double getPivotPosition() {
-        return pivotMotor.getEncoder().getPosition() * -1;
+        return pivotMotor.getEncoder().getPosition();
     }
 
     /** Gets the position of the arm motor.
