@@ -20,7 +20,7 @@ public class CraneControlCommand extends CommandBase {
      *
      * @param pivotPositionSupplier Supplier for pivot position
      * @param armPositionSupplier Supplier for arm position
-     * @param clawSpeedSupplier Supplier for claw position
+     * @param clawSpeedSupplier Supplier for claw speed [-1, 1]
      */
     public CraneControlCommand(Supplier<Double> pivotPositionSupplier, Supplier<Double> armPositionSupplier, Supplier<Double> clawSpeedSupplier) {
         this.pivotPositionSupplier = pivotPositionSupplier;
