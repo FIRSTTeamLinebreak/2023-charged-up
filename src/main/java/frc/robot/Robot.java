@@ -71,7 +71,9 @@ public class Robot extends TimedRobot {
 
     /** This function runs at the start of the autonomous mode. */
     @Override
-    public void autonomousInit() {}
+    public void autonomousInit() {
+        swerveSubsystem.zeroGyro();
+    }
 
     /** This function is called periodically during autonomous. */
     @Override
