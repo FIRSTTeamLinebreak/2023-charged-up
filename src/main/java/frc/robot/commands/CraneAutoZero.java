@@ -7,6 +7,12 @@ import frc.robot.subsystems.Crane;
 public class CraneAutoZero extends CommandBase {
     private Crane craneSub;
 
+    private boolean startedArmCalibration = false;
+    private boolean startedPivotCalibration = false;
+
+    private boolean finishedArmCalibration = false;
+    private boolean finishedPivotCalibration = false;
+
     /** Creates a command that automatically zeros the pivot and arm encoders. */
     public CraneAutoZero() {
         craneSub = Crane.getInstance();
@@ -14,19 +20,31 @@ public class CraneAutoZero extends CommandBase {
 
     /** Called once when the command is initially scheduled. */
     @Override
-    public void initialize() {
-        craneSub.setArmSpeed(-0.1);
-        while (!craneSub.getArmSwitch()) {}
-        craneSub.zeroArmEncoder();
-
-        craneSub.setPivotSpeed(-0.1);
-        while (!craneSub.getPivotSwitch()) {}
-        craneSub.zeroPivotEncoder();
-    }
+    public void initialize() {}
 
     /** Called repeatedly while the command is scheduled. */
     @Override
-    public void execute() {}
+    public void execute() {
+        // Set motor speeds
+        if (!startedArmCalibration) {
+            craneSub.setArmSpeed(-0.1);
+        }
+
+        if (!startedPivotCalibration && finishedArmCalibration) {
+            craneSub.setPivotSpeed(-0.5);
+        }
+
+        // Check limit switches
+        if (craneSub.getArmSwitch()) {
+            craneSub.setArmSpeed(0);
+            craneSub.zeroArmEncoder();
+        }
+
+        if (craneSub.getPivotSwitch()) {
+            craneSub.setPivotSpeed(0);
+            craneSub.zeroPivotEncoder();
+        }
+    }
 
     /** Called when either the command finishes normally, or when it interrupted/canceled. Do not schedule commands here that share requirements with this command. Use andThen(Command) instead.
      *
@@ -41,6 +59,6 @@ public class CraneAutoZero extends CommandBase {
      */
     @Override
     public boolean isFinished() {
-        return true;
+        return finishedArmCalibration && finishedPivotCalibration;
     }
 }
