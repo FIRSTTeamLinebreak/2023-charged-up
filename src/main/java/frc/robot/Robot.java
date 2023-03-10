@@ -83,7 +83,7 @@ public class Robot extends TimedRobot {
         // Swerve control
         swerveSubsystem.setDefaultCommand(new SwerveJoystickDriveCommand(
             driveController::getLeftX,
-            driveController::getLeftY,
+            () -> driveController.getLeftY() * -1,
             () -> applyLinearDeadzone(OiConstants.joystickDeadzone, turningController.getLeftX()) == 0.0 ? driveController.getRightX() : turningController.getLeftX(), // Allow either driver to turn the robot, but have the turning controller override the drive controller
             () -> !driveController.getHID().getRightBumper()
         ));
