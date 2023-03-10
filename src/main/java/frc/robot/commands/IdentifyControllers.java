@@ -13,8 +13,9 @@ public class IdentifyControllers extends CommandBase {
      * @param isTurningController Weather to identify the controller calling this command as the turning controller
      * @param showTrue Weather to identify this controller by putting true to the Smart Dashboard
      */
-    public IdentifyControllers(boolean isTurningController, boolean showTru) {
+    public IdentifyControllers(boolean isTurningController, boolean showTrue) {
         this.isTurningController = isTurningController;
+        this.showTrue = showTrue;
     }
 
     /** Called once when the command is initially scheduled. */
