@@ -84,9 +84,9 @@ public class Robot extends TimedRobot {
     public void teleopInit() {
         // Swerve control
         swerveSubsystem.setDefaultCommand(new SwerveJoystickDriveCommand(
-            driveController::getLeftX,
+            () -> driveController.getLeftX() * -1,
             () -> driveController.getLeftY() * -1,
-            () -> applyLinearDeadzone(OiConstants.joystickDeadzone, turningController.getLeftX()) == 0.0 ? driveController.getRightX() : turningController.getLeftX(), // Allow either driver to turn the robot, but have the turning controller override the drive controller
+            () -> applyLinearDeadzone(OiConstants.joystickDeadzone, turningController.getLeftX()) == 0 ? driveController.getRightX() : turningController.getLeftX(), // Allow either driver to turn the robot, but have the turning controller override the drive controller
             () -> !driveController.getHID().getRightBumper()
         ));
 
