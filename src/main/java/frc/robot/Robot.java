@@ -28,14 +28,16 @@ public class Robot extends TimedRobot {
     private CommandXboxController driveController;
     private CommandXboxController turningController;
 
-    // Subsystems
+    // Swerve
     private SwerveDrive swerveSubsystem;
+    private double swerveTargetTurningSpeed = 0.0;
 
     // Crane
     private Crane craneSubsystem;
 
-    private Double cranePivotTargetPosition = 0.0;
-    private Double craneArmTargetPosition = 0.0;
+    private double cranePivotTargetPosition = 0.0;
+    private double craneArmTargetPosition = 0.0;
+    private double craneClawTargetSpeed = 0.0;
 
     /** This function is run when the robot is first started up. */
     @Override
@@ -86,42 +88,64 @@ public class Robot extends TimedRobot {
         swerveSubsystem.setDefaultCommand(new SwerveJoystickDriveCommand(
             () -> driveController.getLeftX() * -1,
             () -> driveController.getLeftY() * -1,
-            () -> applyLinearDeadzone(OiConstants.joystickDeadzone, turningController.getLeftX()) == 0 ? driveController.getRightX() : turningController.getLeftX(), // Allow either driver to turn the robot, but have the turning controller override the drive controller
+            () -> swerveTargetTurningSpeed,
             () -> !driveController.getHID().getRightBumper()
         ));
 
         // Crane control
-        if (turningController.getHID().getYButtonPressed()) { // Max/top set point
-            cranePivotTargetPosition = Crane.pivotFrontTop;
-            craneArmTargetPosition = Crane.armMax;
-        } else if (turningController.getHID().getBButtonPressed()) { // Mid set point
-            cranePivotTargetPosition = Crane.pivotFrontMid;
-            craneArmTargetPosition = Crane.armMid;
-        } else if (turningController.getHID().getAButtonPressed()) { // Min/bottom set point
-            cranePivotTargetPosition = Crane.pivotFrontBottom;
-            craneArmTargetPosition = Crane.armMin;
-        }
-
         craneSubsystem.setDefaultCommand(new CraneControlCommand(
             () -> cranePivotTargetPosition,
             () -> craneArmTargetPosition,
-            () -> turningController.getHID().getStartButton() ? 0.3 : turningController.getHID().getBackButton() ? -0.3 : 0
+            () -> craneClawTargetSpeed
         ));
-
-        // Controller identifiers
-        driveController.start().onTrue(new IdentifyControllers(false, true));
-        driveController.start().onFalse(new IdentifyControllers(false, false));
-
-        turningController.start().onTrue(new IdentifyControllers(true, true));
-        turningController.start().onTrue(new IdentifyControllers(true, false));
-
-        // Other commands
-        driveController.x().onTrue(new CraneAutoZero());
     }
 
     /** This function is called periodically during teleop. */
     @Override
-    public void teleopPeriodic() {}
+    public void teleopPeriodic() {
+        SmartDashboard.putNumber("Pivot Position", craneSubsystem.getPivotPosition());
+        SmartDashboard.putNumber("Arm Position", craneSubsystem.getArmPosition());
+        SmartDashboard.putNumber("Pivot Target", cranePivotTargetPosition);
+        SmartDashboard.putNumber("Arm Target", craneArmTargetPosition);
+
+        // Swerve control
+        if (applyLinearDeadzone(OiConstants.joystickDeadzone, turningController.getRightX()) != 0) { // Slow turning on turning controller
+            swerveTargetTurningSpeed = turningController.getRightX() / 4;
+        } else if (applyLinearDeadzone(OiConstants.joystickDeadzone, driveController.getRightX()) != 0) { // Allow drive controller to turn if turning controller isn't giving input
+            swerveTargetTurningSpeed = driveController.getRightX();
+        } else { // Reset target when not moving
+            swerveTargetTurningSpeed = 0;
+        }
+
+        // Crane control
+        if (applyLinearDeadzone(OiConstants.joystickDeadzone, turningController.getLeftY()) > 0) { // Pivot up
+            cranePivotTargetPosition -= 0.7;
+        } else if (applyLinearDeadzone(OiConstants.joystickDeadzone, turningController.getLeftY()) < 0) { // Pivot down
+            cranePivotTargetPosition += 0.7;
+        }
+
+        if (applyLinearDeadzone(OiConstants.triggerDeadzone, turningController.getLeftTriggerAxis()) > 0) { // Arm out
+            craneArmTargetPosition += 1.3;
+        } else if (turningController.getHID().getLeftBumper()) { // Arm in
+            craneArmTargetPosition -= 1.3;
+        }
+
+        if (turningController.getHID().getRightBumper()) { // Claw out
+            craneClawTargetSpeed = 0.3;
+        } else if (applyLinearDeadzone(OiConstants.triggerDeadzone, turningController.getHID().getRightTriggerAxis()) > 0) { // Claw in
+            craneClawTargetSpeed = -0.3;
+        } else { // Stop when no input is given
+            craneClawTargetSpeed = 0;
+        }
+
+
+        if (craneSubsystem.getPivotSwitch()) { // Prevent having the target further in when the limit switches are pressed
+            cranePivotTargetPosition = craneSubsystem.getPivotPosition();
+        }
+        if (craneSubsystem.getArmSwitch()) {
+            craneArmTargetPosition = craneSubsystem.getArmPosition();
+        }
+    }
 
     /** This function is called at the start of the test mode. */
     @Override
