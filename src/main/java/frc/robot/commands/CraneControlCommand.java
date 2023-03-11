@@ -27,8 +27,11 @@ public class CraneControlCommand extends CommandBase {
         this.armPositionSupplier = armPositionSupplier;
         this.clawSpeedSupplier = clawSpeedSupplier;
 
-        pivotPidController = new PIDController(0.05, 0.0, 0.0);
-        armPidController = new PIDController(0.05, 0.0, 0.0);
+        pivotPidController = new PIDController(0.5, 0.0, 0.0);
+        armPidController = new PIDController(0.75, 0.0, 0.0);
+
+        pivotPidController.setTolerance(0.25); // @TODO: Tune
+        armPidController.setTolerance(0.125); // @TODO: Tune
 
         craneSub = Crane.getInstance();
         addRequirements(craneSub);
@@ -42,8 +45,8 @@ public class CraneControlCommand extends CommandBase {
     /** Called repeatedly while the command is scheduled. */
     @Override
     public void execute() {
-        craneSub.setPivotSpeed(pivotPidController.calculate(craneSub.getPivotPosition(), pivotPositionSupplier.get()) * 0.05);
-        craneSub.setArmSpeed(armPidController.calculate(craneSub.getArmPosition(), armPositionSupplier.get()) * 0.05);
+        craneSub.setPivotSpeed(pivotPidController.calculate(craneSub.getPivotPosition(), pivotPositionSupplier.get()) * 0.1); // @TODO: Tune
+        craneSub.setArmSpeed(armPidController.calculate(craneSub.getArmPosition(), armPositionSupplier.get()) * 0.05); // @TODO: Tune
         craneSub.setClawSpeed(clawSpeedSupplier.get());
     }
 
