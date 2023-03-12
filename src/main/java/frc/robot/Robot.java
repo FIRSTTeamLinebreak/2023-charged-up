@@ -32,17 +32,17 @@ public class Robot extends TimedRobot {
     private double swerveTargetTurningSpeed = 0.0;
 
     // Crane
-    private Crane craneSubsystem;
+    // private Crane craneSubsystem;
 
-    private double cranePivotTargetPosition = 0.0;
-    private double craneArmTargetPosition = 0.0;
-    private double craneClawTargetSpeed = 0.0;
+    // private double cranePivotTargetPosition = 0.0;
+    // private double craneArmTargetPosition = 0.0;
+    // private double craneClawTargetSpeed = 0.0;
 
     /** This function is run when the robot is first started up. */
     @Override
     public void robotInit() {
         swerveSubsystem = SwerveDrive.getInstance();
-        craneSubsystem = Crane.getInstance();
+        // craneSubsystem = Crane.getInstance();
 
         driveController = new CommandXboxController(0);
         turningController = new CommandXboxController(1);
@@ -67,7 +67,7 @@ public class Robot extends TimedRobot {
     @Override
     public void disabledInit() {
         swerveSubsystem.stop();
-        craneSubsystem.stop();
+        // craneSubsystem.stop();
     }
 
     /** This function is called periodically when the bot is disabled. For safety use only! */
@@ -96,20 +96,20 @@ public class Robot extends TimedRobot {
         ));
 
         // Crane control
-        craneSubsystem.setDefaultCommand(new CraneControlCommand(
-            () -> cranePivotTargetPosition,
-            () -> craneArmTargetPosition,
-            () -> craneClawTargetSpeed
-        ));
+        // craneSubsystem.setDefaultCommand(new CraneControlCommand(
+        //     () -> cranePivotTargetPosition,
+        //     () -> craneArmTargetPosition,
+        //     () -> craneClawTargetSpeed
+        // ));
     }
 
     /** This function is called periodically during teleop. */
     @Override
     public void teleopPeriodic() {
-        SmartDashboard.putNumber("Pivot Position", craneSubsystem.getPivotPosition());
-        SmartDashboard.putNumber("Arm Position", craneSubsystem.getArmPosition());
-        SmartDashboard.putNumber("Pivot Target", cranePivotTargetPosition);
-        SmartDashboard.putNumber("Arm Target", craneArmTargetPosition);
+        // SmartDashboard.putNumber("Pivot Position", craneSubsystem.getPivotPosition());
+        // SmartDashboard.putNumber("Arm Position", craneSubsystem.getArmPosition());
+        // SmartDashboard.putNumber("Pivot Target", cranePivotTargetPosition);
+        // SmartDashboard.putNumber("Arm Target", craneArmTargetPosition);
 
         // Swerve control
         if (applyLinearDeadzone(OiConstants.joystickDeadzone, driveController.getRightX()) != 0) {
@@ -123,37 +123,37 @@ public class Robot extends TimedRobot {
         }
 
         // Crane control
-        if (applyLinearDeadzone(OiConstants.joystickDeadzone, turningController.getRightY()) > 0) { // Pivot up fast
-            cranePivotTargetPosition -= 0.7;
-        } else if (applyLinearDeadzone(OiConstants.joystickDeadzone, turningController.getRightY()) < 0) { // Pivot down fast
-            cranePivotTargetPosition += 0.7;
-        } else if (applyLinearDeadzone(OiConstants.joystickDeadzone, turningController.getLeftY()) > 0) { // Pivot up slow
-            cranePivotTargetPosition -= 0.4;
-        } else if (applyLinearDeadzone(OiConstants.joystickDeadzone, turningController.getLeftY()) < 0) { // Pivot down slow
-            cranePivotTargetPosition += 0.4;
-        }
+        // if (applyLinearDeadzone(OiConstants.joystickDeadzone, turningController.getRightY()) > 0) { // Pivot up fast
+        //     cranePivotTargetPosition -= 0.7;
+        // } else if (applyLinearDeadzone(OiConstants.joystickDeadzone, turningController.getRightY()) < 0) { // Pivot down fast
+        //     cranePivotTargetPosition += 0.7;
+        // } else if (applyLinearDeadzone(OiConstants.joystickDeadzone, turningController.getLeftY()) > 0) { // Pivot up slow
+        //     cranePivotTargetPosition -= 0.4;
+        // } else if (applyLinearDeadzone(OiConstants.joystickDeadzone, turningController.getLeftY()) < 0) { // Pivot down slow
+        //     cranePivotTargetPosition += 0.4;
+        // }
 
-        if (applyLinearDeadzone(OiConstants.triggerDeadzone, turningController.getLeftTriggerAxis()) > 0) { // Arm out
-            craneArmTargetPosition += 1.5;
-        } else if (turningController.getHID().getLeftBumper()) { // Arm in
-            craneArmTargetPosition -= 1.5;
-        }
+        // if (applyLinearDeadzone(OiConstants.triggerDeadzone, turningController.getLeftTriggerAxis()) > 0) { // Arm out
+        //     craneArmTargetPosition += 1.5;
+        // } else if (turningController.getHID().getLeftBumper()) { // Arm in
+        //     craneArmTargetPosition -= 1.5;
+        // }
 
-        if (turningController.getHID().getRightBumper()) { // Claw out
-            craneClawTargetSpeed = 0.3;
-        } else if (applyLinearDeadzone(OiConstants.triggerDeadzone, turningController.getHID().getRightTriggerAxis()) > 0) { // Claw in
-            craneClawTargetSpeed = -0.3;
-        } else { // Stop when no input is given
-            craneClawTargetSpeed = 0;
-        }
+        // if (turningController.getHID().getRightBumper()) { // Claw out
+        //     craneClawTargetSpeed = 0.3;
+        // } else if (applyLinearDeadzone(OiConstants.triggerDeadzone, turningController.getHID().getRightTriggerAxis()) > 0) { // Claw in
+        //     craneClawTargetSpeed = -0.3;
+        // } else { // Stop when no input is given
+        //     craneClawTargetSpeed = 0;
+        // }
 
 
-        if (craneSubsystem.getPivotSwitch()) { // Prevent having the target further in when the limit switches are pressed
-            cranePivotTargetPosition = craneSubsystem.getPivotPosition();
-        }
-        if (craneSubsystem.getArmSwitch()) {
-            craneArmTargetPosition = craneSubsystem.getArmPosition();
-        }
+        // if (craneSubsystem.getPivotSwitch()) { // Prevent having the target further in when the limit switches are pressed
+        //     cranePivotTargetPosition = craneSubsystem.getPivotPosition();
+        // }
+        // if (craneSubsystem.getArmSwitch()) {
+        //     craneArmTargetPosition = craneSubsystem.getArmPosition();
+        // }
     }
 
     /** This function is called at the start of the test mode. */
@@ -169,11 +169,11 @@ public class Robot extends TimedRobot {
         SwerveModuleState[] zeros = {zero, zero, zero, zero};
         swerveSubsystem.setStates(zeros, true);
 
-        SmartDashboard.putNumber("Pivot Position", craneSubsystem.getPivotPosition());
-        SmartDashboard.putBoolean("Pivot Switch", craneSubsystem.getPivotSwitch());
-        if (turningController.getHID().getAButtonPressed()) {
-            craneSubsystem.zeroPivotEncoder();
-        }
-        craneSubsystem.setPivotSpeed(turningController.getLeftY() * 0.1);
+        // SmartDashboard.putNumber("Pivot Position", craneSubsystem.getPivotPosition());
+        // SmartDashboard.putBoolean("Pivot Switch", craneSubsystem.getPivotSwitch());
+        // if (turningController.getHID().getAButtonPressed()) {
+        //     craneSubsystem.zeroPivotEncoder();
+        // }
+        // craneSubsystem.setPivotSpeed(turningController.getLeftY() * 0.1);
     }
 }
