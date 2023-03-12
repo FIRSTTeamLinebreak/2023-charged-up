@@ -109,11 +109,13 @@ public class Robot extends TimedRobot {
         SmartDashboard.putNumber("Arm Target", craneArmTargetPosition);
 
         // Swerve control
-        if (applyLinearDeadzone(OiConstants.joystickDeadzone, turningController.getRightX()) != 0) { // Slow turning on turning controller
-            swerveTargetTurningSpeed = turningController.getRightX() / 4;
-        } else if (applyLinearDeadzone(OiConstants.joystickDeadzone, driveController.getRightX()) != 0) { // Allow drive controller to turn if turning controller isn't giving input
-            swerveTargetTurningSpeed = driveController.getRightX();
-        } else { // Reset target when not moving
+        if (applyLinearDeadzone(OiConstants.joystickDeadzone, driveController.getRightX()) != 0) {
+            if (driveController.getHID().getLeftBumper()) { // Decrease speed
+                swerveTargetTurningSpeed = driveController.getRightX() / 4;
+            } else {
+                swerveTargetTurningSpeed = driveController.getRightX();
+            }
+        } else {
             swerveTargetTurningSpeed = 0;
         }
 
