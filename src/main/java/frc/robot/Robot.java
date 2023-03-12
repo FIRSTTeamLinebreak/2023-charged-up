@@ -118,9 +118,13 @@ public class Robot extends TimedRobot {
         }
 
         // Crane control
-        if (applyLinearDeadzone(OiConstants.joystickDeadzone, turningController.getLeftY()) > 0) { // Pivot up
+        if (applyLinearDeadzone(OiConstants.joystickDeadzone, turningController.getLeftY()) > 0) { // Pivot up slow
+            cranePivotTargetPosition -= 0.4;
+        } else if (applyLinearDeadzone(OiConstants.joystickDeadzone, turningController.getLeftY()) < 0) { // Pivot down slow
+            cranePivotTargetPosition += 0.4;
+        } else if (applyLinearDeadzone(OiConstants.joystickDeadzone, turningController.getRightY()) > 0) { // Pivot up fast
             cranePivotTargetPosition -= 0.7;
-        } else if (applyLinearDeadzone(OiConstants.joystickDeadzone, turningController.getLeftY()) < 0) { // Pivot down
+        } else if (applyLinearDeadzone(OiConstants.joystickDeadzone, turningController.getRightY()) < 0) { // Pivot down fast
             cranePivotTargetPosition += 0.7;
         }
 
