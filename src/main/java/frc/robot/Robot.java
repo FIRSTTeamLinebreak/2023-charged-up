@@ -131,9 +131,9 @@ public class Robot extends TimedRobot {
         }
 
         if (applyLinearDeadzone(OiConstants.triggerDeadzone, turningController.getLeftTriggerAxis()) > 0) { // Arm out
-            craneArmTargetPosition += 1.3;
+            craneArmTargetPosition += 1.5;
         } else if (turningController.getHID().getLeftBumper()) { // Arm in
-            craneArmTargetPosition -= 1.3;
+            craneArmTargetPosition -= 1.5;
         }
 
         if (turningController.getHID().getRightBumper()) { // Claw out
