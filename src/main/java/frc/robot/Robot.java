@@ -8,14 +8,13 @@ import static frc.robot.Util.applyLinearDeadzone;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.OiConstants;
-import frc.robot.commands.CraneAutoZero;
 import frc.robot.commands.CraneControlCommand;
-import frc.robot.commands.IdentifyControllers;
 import frc.robot.commands.SwerveJoystickDriveCommand;
 import frc.robot.subsystems.Crane;
 import frc.robot.subsystems.SwerveDrive;
@@ -47,6 +46,10 @@ public class Robot extends TimedRobot {
 
         driveController = new CommandXboxController(0);
         turningController = new CommandXboxController(1);
+
+        NetworkTableInstance.getDefault().getTable("limelight").getEntry("camMode").setNumber(0
+        );
+        NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(9);
     }
 
     /** This function is called every robot packet, no matter the mode.
