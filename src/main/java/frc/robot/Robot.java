@@ -28,11 +28,11 @@ public class Robot extends TimedRobot {
     private CommandXboxController turningController;
 
     // Swerve
-    private SwerveDrive swerveSubsystem;
+    private SwerveDrive swerveSub;
     private double swerveTargetTurningSpeed = 0.0;
 
     // Crane
-    private Crane craneSubsystem;
+    private Crane craneSub;
 
     private double cranePivotTargetPosition = 0.0;
     private double craneArmTargetPosition = 0.0;
@@ -41,8 +41,8 @@ public class Robot extends TimedRobot {
     /** This function is run when the robot is first started up. */
     @Override
     public void robotInit() {
-        swerveSubsystem = SwerveDrive.getInstance();
-        craneSubsystem = Crane.getInstance();
+        swerveSub = SwerveDrive.getInstance();
+        craneSub = Crane.getInstance();
 
         driveController = new CommandXboxController(0);
         turningController = new CommandXboxController(1);
@@ -66,8 +66,8 @@ public class Robot extends TimedRobot {
     /** This function is called at the start of the disabled mode. */
     @Override
     public void disabledInit() {
-        swerveSubsystem.stop();
-        craneSubsystem.stop();
+        swerveSub.stop();
+        craneSub.stop();
     }
 
     /** This function is called periodically when the bot is disabled. For safety use only! */
@@ -77,7 +77,7 @@ public class Robot extends TimedRobot {
     /** This function runs at the start of the autonomous mode. */
     @Override
     public void autonomousInit() {
-        swerveSubsystem.zeroGyro();
+        swerveSub.zeroGyro();
     }
 
     /** This function is called periodically during autonomous. */
@@ -88,7 +88,7 @@ public class Robot extends TimedRobot {
     @Override
     public void teleopInit() {
         // Swerve control
-        swerveSubsystem.setDefaultCommand(new SwerveJoystickDriveCommand(
+        swerveSub.setDefaultCommand(new SwerveJoystickDriveCommand(
             () -> driveController.getLeftX() * -1,
             () -> driveController.getLeftY(),
             () -> swerveTargetTurningSpeed * -1,
@@ -96,7 +96,7 @@ public class Robot extends TimedRobot {
         ));
 
         // Crane control
-        craneSubsystem.setDefaultCommand(new CraneControlCommand(
+        craneSub.setDefaultCommand(new CraneControlCommand(
             () -> cranePivotTargetPosition,
             () -> craneArmTargetPosition,
             () -> craneClawTargetSpeed
@@ -106,8 +106,8 @@ public class Robot extends TimedRobot {
     /** This function is called periodically during teleop. */
     @Override
     public void teleopPeriodic() {
-        SmartDashboard.putNumber("Pivot Position", craneSubsystem.getPivotPosition());
-        SmartDashboard.putNumber("Arm Position", craneSubsystem.getArmPosition());
+        SmartDashboard.putNumber("Pivot Position", craneSub.getPivotPosition());
+        SmartDashboard.putNumber("Arm Position", craneSub.getArmPosition());
         SmartDashboard.putNumber("Pivot Target", cranePivotTargetPosition);
         SmartDashboard.putNumber("Arm Target", craneArmTargetPosition);
 
@@ -148,11 +148,11 @@ public class Robot extends TimedRobot {
         }
 
 
-        if (craneSubsystem.getPivotSwitch()) { // Prevent having the target further in when the limit switches are pressed
-            cranePivotTargetPosition = craneSubsystem.getPivotPosition();
+        if (craneSub.getPivotSwitch()) { // Prevent having the target further in when the limit switches are pressed
+            cranePivotTargetPosition = craneSub.getPivotPosition();
         }
-        if (craneSubsystem.getArmSwitch()) {
-            craneArmTargetPosition = craneSubsystem.getArmPosition();
+        if (craneSub.getArmSwitch()) {
+            craneArmTargetPosition = craneSub.getArmPosition();
         }
     }
 
@@ -167,13 +167,13 @@ public class Robot extends TimedRobot {
     public void testPeriodic() {
         SwerveModuleState zero = new SwerveModuleState(0, Rotation2d.fromRadians(0));
         SwerveModuleState[] zeros = {zero, zero, zero, zero};
-        swerveSubsystem.setStates(zeros, true);
+        swerveSub.setStates(zeros, true);
 
-        SmartDashboard.putNumber("Pivot Position", craneSubsystem.getPivotPosition());
-        SmartDashboard.putBoolean("Pivot Switch", craneSubsystem.getPivotSwitch());
+        SmartDashboard.putNumber("Pivot Position", craneSub.getPivotPosition());
+        SmartDashboard.putBoolean("Pivot Switch", craneSub.getPivotSwitch());
         if (turningController.getHID().getAButtonPressed()) {
-            craneSubsystem.zeroPivotEncoder();
+            craneSub.zeroPivotEncoder();
         }
-        craneSubsystem.setPivotSpeed(turningController.getLeftY() * 0.1);
+        craneSub.setPivotSpeed(turningController.getLeftY() * 0.1);
     }
 }

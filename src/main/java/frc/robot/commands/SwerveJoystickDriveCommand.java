@@ -13,7 +13,7 @@ import java.util.function.Supplier;
 
 /** Controls the swerve subsystem via joysticks. */
 public class SwerveJoystickDriveCommand extends CommandBase {
-    private final SwerveDrive swerveSubsystem;
+    private final SwerveDrive swerveSub;
 
     private final Supplier<Double> xSpeedSupplier;
     private final Supplier<Double> ySpeedSupplier;
@@ -29,7 +29,7 @@ public class SwerveJoystickDriveCommand extends CommandBase {
      * @param fieldOrientedDrivingSupplier A supplier to say weather to drive relative to the field
      */
     public SwerveJoystickDriveCommand(Supplier<Double> xSpeedSupplier, Supplier<Double> ySpeedSupplier, Supplier<Double> turningSpeedSupplier, Supplier<Boolean> fieldOrientedDrivingSupplier) {
-        this.swerveSubsystem = SwerveDrive.getInstance();
+        this.swerveSub = SwerveDrive.getInstance();
 
         this.xSpeedSupplier = xSpeedSupplier;
         this.ySpeedSupplier = ySpeedSupplier;
@@ -37,7 +37,7 @@ public class SwerveJoystickDriveCommand extends CommandBase {
 
         this.fieldOrientedDrivingSupplier = fieldOrientedDrivingSupplier;
 
-        addRequirements(swerveSubsystem);
+        addRequirements(swerveSub);
     }
 
     /** Called once when the command is initially scheduled. */
@@ -65,14 +65,14 @@ public class SwerveJoystickDriveCommand extends CommandBase {
 
         // Convert speeds to chassis speeds
         if (fieldOrientedDrivingSupplier.get()) {
-            chassisSpeed = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, turningSpeed, swerveSubsystem.getRotation2d());
+            chassisSpeed = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, turningSpeed, swerveSub.getRotation2d());
         } else {
             chassisSpeed = new ChassisSpeeds(ySpeed, xSpeed, turningSpeed); // Yes, ChassisSpeeds wants x, y, and turning and we give it y, x, turning. This is the fix to rotate the controls 90 degrees
         }
 
         // Create swerve module states for the desired movement and push to subsystem
         SwerveModuleState[] moduleStates = SwerveSubsystemConstants.driveKinematics.toSwerveModuleStates(chassisSpeed);
-        swerveSubsystem.setStates(moduleStates, true);
+        swerveSub.setStates(moduleStates, true);
     }
 
     /** Called when either the command finishes normally, or when it interrupted/canceled. Do not schedule commands here that share requirements with this command. Use andThen(Command) instead.
@@ -81,7 +81,7 @@ public class SwerveJoystickDriveCommand extends CommandBase {
      */
     @Override
     public void end(boolean interrupted) {
-        swerveSubsystem.stop();
+        swerveSub.stop();
     }
 
     /** Whether the command has finished. If true, calls end() and stops the command from executing
