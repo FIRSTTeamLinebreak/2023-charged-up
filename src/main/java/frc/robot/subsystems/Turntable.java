@@ -45,7 +45,8 @@ public class Turntable extends SubsystemBase {
         SmartDashboard.putBoolean("User Controlled Turntable", userControl);
     }
 
-    /** Sets the desired speed for the turntable while under user control
+    /** Sets the desired speed for the turntable while under user control.
+     *
      * @param speed The desired speed [-1, 1]
      */
     public void setUserControlSpeed(double speed) {

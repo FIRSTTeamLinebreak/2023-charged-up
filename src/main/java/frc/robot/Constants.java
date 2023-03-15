@@ -14,17 +14,12 @@ import edu.wpi.first.math.util.Units;
  */
 public final class Constants {
     /** Assorted other constants for the swerve subsystem. */
-    public static final class SwerveSubsystemConstants {
+    public static final class SwerveConstants {
         public static final double wheelDiameter = Units.inchesToMeters(4); // Meters
         public static final double driveGearRatio = 6.12;
 
         public static final double driveRotToMeters = driveGearRatio * Math.PI * wheelDiameter; // Drive motor rotations to meters
         public static final double driveRpsToMps = driveRotToMeters / 60; // Drive motor rotations per second to meters per second
-
-        public static final double turningPidP = 0.7; // @TODO: Tune
-        public static final double turningPidI = 0.0;
-        public static final double turningPidD = 0.0;
-        public static final double turningPidTolerance = 0.05;
 
         public static final double drivePhysicalMaxSpeed = 5.486; // Physical max speed of the motor in m/s
 
@@ -47,7 +42,7 @@ public final class Constants {
         public static final double joystickDeadzone = 0.1; // The circular zone around "zero" to ignore. Prevents joystick drift from becoming an issue
         public static final double triggerDeadzone = 0.1; // Deadzone on the triggers. Prevents drift from becoming an issue
 
-        public static final double xySpeedMultiplier = 5; // Speed multiplier in m/s(?)
+        public static final double xySpeedMultiplier = 1; // Speed multiplier in m/s(?)
         public static final double turningSpeedMultiplier = 1.25 * Math.PI;
     }
 }

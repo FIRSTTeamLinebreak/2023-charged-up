@@ -7,7 +7,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.SwerveSubsystemConstants;
+import frc.robot.Constants.SwerveConstants;
 
 /** The subsystem that handles swerve drive. */
 public class SwerveDrive extends SubsystemBase {
@@ -37,11 +37,11 @@ public class SwerveDrive extends SubsystemBase {
     /** Initializes a new SwerveDrive subsystem object. */
     private SwerveDrive() {
         // Init the swerve modules
-        frontLeft  = new SwerveModule(21, false, 22, false, 23, 4.516 - Math.PI); 
+        frontLeft  = new SwerveModule(21, false, 22, false, 23, 4.516 - Math.PI);
         frontRight = new SwerveModule(31, false, 32, false, 33, 5.604);
-        backLeft   = new SwerveModule(41, false, 42, false, 43, 5.647 - Math.PI); 
+        backLeft   = new SwerveModule(41, false, 42, false, 43, 5.647 - Math.PI);
         backRight  = new SwerveModule(51, false, 52, false, 53, 4.522);
- 
+
         gyro = new AHRS(SerialPort.Port.kMXP);
         new Thread(() -> { // Can't call gyro.reset() right away because the gyroscope is calibrating, so create a new process and delay
             try {
@@ -67,7 +67,7 @@ public class SwerveDrive extends SubsystemBase {
             // We will only get valid fused headings if the magnetometer is calibrated
             return Rotation2d.fromDegrees(gyro.getFusedHeading() + gyroOffset);
         }
-    
+
         // We have to invert the angle of the NavX so that rotating the robot counter-clockwise makes the angle increase.
         return Rotation2d.fromDegrees((360.0 - gyro.getYaw()) + gyroOffset);
     }
@@ -91,7 +91,7 @@ public class SwerveDrive extends SubsystemBase {
      * @param log If the Swerve Modules should log there target state and current state
      */
     public void setStates(SwerveModuleState[] desiredStates, boolean log) {
-        SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, SwerveSubsystemConstants.drivePhysicalMaxSpeed); // Normalize the speeds so we don't attempt to overdraw currents
+        SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, SwerveConstants.drivePhysicalMaxSpeed); // Normalize the speeds so we don't attempt to overdraw currents
 
         frontLeft.setState(desiredStates[0], log);
         frontRight.setState(desiredStates[1], log);

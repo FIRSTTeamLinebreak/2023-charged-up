@@ -27,11 +27,11 @@ public class CraneAutoZero extends CommandBase {
     public void execute() {
         // Set motor speeds
         if (!startedArmCalibration) {
-            craneSub.setArmSpeed(-0.1);
+            craneSub.setArmSpeed(-0.1); // @TODO: Tune
         }
 
         if (!startedPivotCalibration && finishedArmCalibration) {
-            craneSub.setPivotSpeed(-0.5);
+            craneSub.setPivotSpeed(-0.5); // @TODO: Tune
         }
 
         // Check limit switches

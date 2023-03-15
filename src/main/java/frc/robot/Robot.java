@@ -31,6 +31,15 @@ public class Robot extends TimedRobot {
     private SwerveDrive swerveSub;
     private double swerveTargetTurningSpeed = 0.0;
 
+    private final double slowTurningDivisor = 4; // Joystick input is divided by this amount for slow turning
+
+    private final double fastPivotIncrementor = 0.7;
+    private final double slowPivotIncrementor = 0.4;
+
+    private final double armIncrementor = 1.5;
+
+    private final double targetClawSpeed = 0.3;
+
     // Crane
     private Crane craneSub;
 
@@ -47,8 +56,7 @@ public class Robot extends TimedRobot {
         driveController = new CommandXboxController(0);
         turningController = new CommandXboxController(1);
 
-        NetworkTableInstance.getDefault().getTable("limelight").getEntry("camMode").setNumber(0
-        );
+        NetworkTableInstance.getDefault().getTable("limelight").getEntry("camMode").setNumber(0);
         NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(9);
     }
 
@@ -114,7 +122,7 @@ public class Robot extends TimedRobot {
         // Swerve control
         if (applyLinearDeadzone(OiConstants.joystickDeadzone, driveController.getRightX()) != 0) {
             if (driveController.getHID().getLeftBumper()) { // Decrease speed
-                swerveTargetTurningSpeed = driveController.getRightX() / 4;
+                swerveTargetTurningSpeed = driveController.getRightX() / slowTurningDivisor;
             } else {
                 swerveTargetTurningSpeed = driveController.getRightX();
             }
@@ -124,25 +132,25 @@ public class Robot extends TimedRobot {
 
         // Crane control
         if (applyLinearDeadzone(OiConstants.joystickDeadzone, turningController.getRightY()) > 0) { // Pivot up fast
-            cranePivotTargetPosition -= 0.7;
+            cranePivotTargetPosition -= fastPivotIncrementor;
         } else if (applyLinearDeadzone(OiConstants.joystickDeadzone, turningController.getRightY()) < 0) { // Pivot down fast
-            cranePivotTargetPosition += 0.7;
+            cranePivotTargetPosition += fastPivotIncrementor;
         } else if (applyLinearDeadzone(OiConstants.joystickDeadzone, turningController.getLeftY()) > 0) { // Pivot up slow
-            cranePivotTargetPosition -= 0.4;
+            cranePivotTargetPosition -= slowPivotIncrementor;
         } else if (applyLinearDeadzone(OiConstants.joystickDeadzone, turningController.getLeftY()) < 0) { // Pivot down slow
-            cranePivotTargetPosition += 0.4;
+            cranePivotTargetPosition += slowPivotIncrementor;
         }
 
         if (applyLinearDeadzone(OiConstants.triggerDeadzone, turningController.getLeftTriggerAxis()) > 0) { // Arm out
-            craneArmTargetPosition += 1.5;
+            craneArmTargetPosition += armIncrementor;
         } else if (turningController.getHID().getLeftBumper()) { // Arm in
-            craneArmTargetPosition -= 1.5;
+            craneArmTargetPosition -= armIncrementor;
         }
 
         if (turningController.getHID().getRightBumper()) { // Claw out
-            craneClawTargetSpeed = 0.3;
+            craneClawTargetSpeed = targetClawSpeed;
         } else if (applyLinearDeadzone(OiConstants.triggerDeadzone, turningController.getHID().getRightTriggerAxis()) > 0) { // Claw in
-            craneClawTargetSpeed = -0.3;
+            craneClawTargetSpeed = targetClawSpeed * -1;
         } else { // Stop when no input is given
             craneClawTargetSpeed = 0;
         }

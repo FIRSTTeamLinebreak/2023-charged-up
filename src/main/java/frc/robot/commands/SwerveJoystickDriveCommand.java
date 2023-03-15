@@ -7,7 +7,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.OiConstants;
-import frc.robot.Constants.SwerveSubsystemConstants;
+import frc.robot.Constants.SwerveConstants;
 import frc.robot.subsystems.SwerveDrive;
 import java.util.function.Supplier;
 
@@ -71,7 +71,7 @@ public class SwerveJoystickDriveCommand extends CommandBase {
         }
 
         // Create swerve module states for the desired movement and push to subsystem
-        SwerveModuleState[] moduleStates = SwerveSubsystemConstants.driveKinematics.toSwerveModuleStates(chassisSpeed);
+        SwerveModuleState[] moduleStates = SwerveConstants.driveKinematics.toSwerveModuleStates(chassisSpeed);
         swerveSub.setStates(moduleStates, true);
     }
 

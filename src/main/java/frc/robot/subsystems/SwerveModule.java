@@ -12,7 +12,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.Constants.SwerveSubsystemConstants;
+import frc.robot.Constants.SwerveConstants;
 
 /** An individual swerve module. */
 public class SwerveModule {
@@ -22,7 +22,7 @@ public class SwerveModule {
     // Turning
     private final CANSparkMax turningController;
     private final PIDController turningPid;
-    
+
     // CAN Coder
     private final CANCoder canCoder;
     private final double canCoderOffset;
@@ -47,9 +47,9 @@ public class SwerveModule {
         turningController.restoreFactoryDefaults(true);
         turningController.setIdleMode(IdleMode.kBrake);
 
-        turningPid = new PIDController(SwerveSubsystemConstants.turningPidP, SwerveSubsystemConstants.turningPidI, SwerveSubsystemConstants.turningPidD);
+        turningPid = new PIDController(0.7, 0.0, 0.0);
         turningPid.enableContinuousInput(0, 2 * Math.PI); // Tell the PID controller that it can go through -PI and PI because its a circle
-        turningPid.setTolerance(SwerveSubsystemConstants.turningPidTolerance);
+        turningPid.setTolerance(0.05);
 
         // CAN Coder
         canCoder = new CANCoder(coderId);
@@ -80,22 +80,22 @@ public class SwerveModule {
     public void setState(SwerveModuleState state, boolean log) {
         if (log) {
             SmartDashboard.putString(
-                "Swerve " + Integer.toString(driveController.getDeviceID() - 10).charAt(0) + " Target State", 
+                "Swerve " + Integer.toString(driveController.getDeviceID() - 10).charAt(0) + " Target State",
                 String.format("Speed: %.3f, Rotation: %.3f", state.speedMetersPerSecond, state.angle.getRadians())
             );
             SmartDashboard.putString(
-                "Swerve " + Integer.toString(driveController.getDeviceID() - 10).charAt(0) + " Current State", 
+                "Swerve " + Integer.toString(driveController.getDeviceID() - 10).charAt(0) + " Current State",
                 String.format("Speed: %.3f, Rotation: %.3f", getDriveVelocity(), getTurningPositionReadable())
             );
         }
-        
+
         if (Math.abs(state.speedMetersPerSecond) <= .01) { // Implements a "deadzone" so releasing the joystick won't make the wheels reset to 0
             stop();
             return;
         }
 
         state = SwerveModuleState.optimize(state, Rotation2d.fromRadians(getTurningPosition())); // Optimize movements to not move more than 90 deg for any new state
-        driveController.set(state.speedMetersPerSecond / SwerveSubsystemConstants.drivePhysicalMaxSpeed);
+        driveController.set(state.speedMetersPerSecond / SwerveConstants.drivePhysicalMaxSpeed);
         turningController.set(turningPid.calculate(getTurningPosition(), state.angle.getRadians()));
     }
 

@@ -27,8 +27,8 @@ public class CraneControlCommand extends CommandBase {
         this.armPositionSupplier = armPositionSupplier;
         this.clawSpeedSupplier = clawSpeedSupplier;
 
-        pivotPidController = new PIDController(0.5, 0.0, 0.0);
-        armPidController = new PIDController(0.75, 0.0, 0.0);
+        pivotPidController = new PIDController(0.5, 0.0, 0.0); // @TODO: Tune
+        armPidController = new PIDController(0.75, 0.0, 0.0); // @TODO: Tune
 
         pivotPidController.setTolerance(0.25); // @TODO: Tune
         armPidController.setTolerance(0.125); // @TODO: Tune

@@ -27,9 +27,6 @@ public class Intake extends SubsystemBase {
     private final CANSparkMax topRoller;
     private final CANSparkMax bottomRoller;
 
-    private final double targetTopRollerSpeed = 0.5; // Speed of top rollers [-1, 1]. @TODO: Tune
-    private final double targetBottomRollerSpeed = 0.5; // Speed of bottom rollers [-1, 1]. @TODO: Tune
-
     private boolean intakeRunning = false;
 
     // Deployment
@@ -61,8 +58,8 @@ public class Intake extends SubsystemBase {
     /** Toggles the intake mechanism. */
     public void toggleIntake() {
         if (intakeRunning) {
-            topRoller.set(targetTopRollerSpeed);
-            bottomRoller.set(targetBottomRollerSpeed);
+            topRoller.set(0.5); // @TODO: Tune
+            bottomRoller.set(0.5); // @TODO: Tune
         } else {
             topRoller.set(0.0);
             bottomRoller.set(0.0);
