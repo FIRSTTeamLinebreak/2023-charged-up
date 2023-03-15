@@ -90,8 +90,8 @@ public class Robot extends TimedRobot {
         // Swerve control
         swerveSubsystem.setDefaultCommand(new SwerveJoystickDriveCommand(
             () -> driveController.getLeftX() * -1,
-            () -> driveController.getLeftY() * -1,
-            () -> swerveTargetTurningSpeed,
+            () -> driveController.getLeftY(),
+            () -> swerveTargetTurningSpeed * -1,
             () -> !driveController.getHID().getRightBumper()
         ));
 

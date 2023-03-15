@@ -65,9 +65,9 @@ public class SwerveJoystickDriveCommand extends CommandBase {
 
         // Convert speeds to chassis speeds
         if (fieldOrientedDrivingSupplier.get()) {
-            chassisSpeed = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, (-1 * ySpeed), (-1 * turningSpeed), swerveSubsystem.getRotation2d());
+            chassisSpeed = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, turningSpeed, swerveSubsystem.getRotation2d());
         } else {
-            chassisSpeed = new ChassisSpeeds((-1 * ySpeed), (-1 * xSpeed), (-1 * turningSpeed)); // Yes, ChassisSpeeds wants x, y, and turning and we give it y, x, turning. This is the fix to rotate the controls 90 degrees
+            chassisSpeed = new ChassisSpeeds(ySpeed, xSpeed, turningSpeed); // Yes, ChassisSpeeds wants x, y, and turning and we give it y, x, turning. This is the fix to rotate the controls 90 degrees
         }
 
         // Create swerve module states for the desired movement and push to subsystem
