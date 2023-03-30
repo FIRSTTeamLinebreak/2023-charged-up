@@ -33,8 +33,8 @@ public class Robot extends TimedRobot {
 
     private final double slowTurningDivisor = 4; // Joystick input is divided by this amount for slow turning
 
-    private final double fastPivotIncrementor = 0.7;
-    private final double slowPivotIncrementor = 0.4;
+    private final double fastPivotIncrementor = 1.6;
+    private final double slowPivotIncrementor = 1.1;
 
     private final double armIncrementor = 1.5;
 
@@ -156,12 +156,12 @@ public class Robot extends TimedRobot {
         }
 
 
-        if (craneSub.getPivotSwitch()) { // Prevent having the target further in when the limit switches are pressed
-            cranePivotTargetPosition = craneSub.getPivotPosition();
-        }
-        if (craneSub.getArmSwitch()) {
-            craneArmTargetPosition = craneSub.getArmPosition();
-        }
+        // if (craneSub.getPivotSwitch()) { // Prevent having the target further in when the limit switches are pressed
+        //     cranePivotTargetPosition = craneSub.getPivotPosition();
+        // }
+        // if (craneSub.getArmSwitch()) {
+        //     craneArmTargetPosition = craneSub.getArmPosition();
+        // }
     }
 
     /** This function is called at the start of the test mode. */

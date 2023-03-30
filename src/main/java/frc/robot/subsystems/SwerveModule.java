@@ -10,6 +10,7 @@ import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.SwerveConstants;
@@ -87,6 +88,10 @@ public class SwerveModule {
                 "Swerve " + Integer.toString(driveController.getDeviceID() - 10).charAt(0) + " Current State",
                 String.format("Speed: %.3f, Rotation: %.3f", getDriveVelocity(), getTurningPositionReadable())
             );
+            SmartDashboard.putString(
+                "Swerve " + Integer.toString(driveController.getDeviceID() - 10).charAt(0) + " Current Position",
+                String.format("Position: %.3f", getDrivePosition())
+            );
         }
 
         if (Math.abs(state.speedMetersPerSecond) <= .01) { // Implements a "deadzone" so releasing the joystick won't make the wheels reset to 0
@@ -105,12 +110,16 @@ public class SwerveModule {
         turningController.set(0);
     }
 
+    public SwerveModulePosition getPosition() {
+        return new SwerveModulePosition(getDrivePosition(), Rotation2d.fromRadians(getTurningPosition()));
+    }
+
     /** Gets the drive motor position.
      *
      * @return Drive motor position
      */
     public double getDrivePosition() {
-        return driveController.getSelectedSensorPosition();
+        return driveController.getSelectedSensorPosition() * SwerveConstants.driveRotToMeters;
     }
 
     /** Gets the velocity of the drive motor.
@@ -118,7 +127,7 @@ public class SwerveModule {
      * @return Drive motor velocity
      */
     public double getDriveVelocity() {
-        return driveController.getSelectedSensorVelocity(); // @TODO use the correct math to convert to mps
+        return driveController.getSelectedSensorVelocity() * SwerveConstants.driveRpsToMps; // @TODO use the correct math to convert to mps
     }
 
     /** Gets the turning motor position in radians.

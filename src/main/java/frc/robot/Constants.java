@@ -15,10 +15,10 @@ import edu.wpi.first.math.util.Units;
 public final class Constants {
     /** Assorted other constants for the swerve subsystem. */
     public static final class SwerveConstants {
-        public static final double wheelDiameter = Units.inchesToMeters(4); // Meters
+        public static final double wheelDiameter = Units.inchesToMeters(2); // Meters
         public static final double driveGearRatio = 6.12;
 
-        public static final double driveRotToMeters = driveGearRatio * Math.PI * wheelDiameter; // Drive motor rotations to meters
+        public static final double driveRotToMeters = ((2 * Math.PI * wheelDiameter) / driveGearRatio) / 2048; // Drive motor rotations to meters
         public static final double driveRpsToMps = driveRotToMeters / 60; // Drive motor rotations per second to meters per second
 
         public static final double drivePhysicalMaxSpeed = 5.486; // Physical max speed of the motor in m/s
