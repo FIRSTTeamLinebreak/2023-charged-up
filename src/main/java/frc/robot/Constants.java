@@ -19,7 +19,7 @@ public final class Constants {
         public static final double driveGearRatio = 6.12;
 
         public static final double driveRotToMeters = ((2 * Math.PI * wheelDiameter) / driveGearRatio) / 2048; // Drive motor rotations to meters
-        public static final double driveRpsToMps = driveRotToMeters / 60; // Drive motor rotations per second to meters per second
+        public static final double driveRpsToMps = driveRotToMeters / 10 * 60 * 2; // Drive motor rotations per second to meters per second
 
         public static final double drivePhysicalMaxSpeed = 5.486; // Physical max speed of the motor in m/s
 
