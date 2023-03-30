@@ -144,15 +144,15 @@ public class Robot extends TimedRobot {
         }
 
         if (applyLinearDeadzone(OiConstants.triggerDeadzone, turningController.getLeftTriggerAxis()) > 0) { // Arm out
-            craneArmTargetPosition += armIncrementor;
-        } else if (turningController.getHID().getLeftBumper()) { // Arm in
             craneArmTargetPosition -= armIncrementor;
+        } else if (turningController.getHID().getLeftBumper()) { // Arm in
+            craneArmTargetPosition += armIncrementor;
         }
 
         if (turningController.getHID().getRightBumper()) { // Claw out
-            craneClawTargetSpeed = targetClawSpeed;
-        } else if (applyLinearDeadzone(OiConstants.triggerDeadzone, turningController.getHID().getRightTriggerAxis()) > 0) { // Claw in
             craneClawTargetSpeed = targetClawSpeed * -1;
+        } else if (applyLinearDeadzone(OiConstants.triggerDeadzone, turningController.getHID().getRightTriggerAxis()) > 0) { // Claw in
+            craneClawTargetSpeed = targetClawSpeed;
         } else { // Stop when no input is given
             craneClawTargetSpeed = 0;
         }
