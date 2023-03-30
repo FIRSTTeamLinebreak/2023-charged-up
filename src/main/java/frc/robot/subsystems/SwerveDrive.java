@@ -50,6 +50,7 @@ public class SwerveDrive extends SubsystemBase {
         backRight  = new SwerveModule(51, false, 52, false, 53, 4.522);
 
         gyro = new AHRS(SerialPort.Port.kMXP);
+        // @TODO: Have a while statement for while not calibrated, calibrate
         new Thread(() -> { // Can't call gyro.reset() right away because the gyroscope is calibrating, so create a new process and delay
             try {
                 Thread.sleep(1000);

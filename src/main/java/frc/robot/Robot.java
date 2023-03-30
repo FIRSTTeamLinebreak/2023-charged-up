@@ -115,11 +115,6 @@ public class Robot extends TimedRobot {
     /** This function is called periodically during teleop. */
     @Override
     public void teleopPeriodic() {
-        SmartDashboard.putNumber("Pivot Position", craneSub.getPivotPosition());
-        SmartDashboard.putNumber("Arm Position", craneSub.getArmPosition());
-        SmartDashboard.putNumber("Pivot Target", cranePivotTargetPosition);
-        SmartDashboard.putNumber("Arm Target", craneArmTargetPosition);
-
         // Swerve control
         if (applyLinearDeadzone(OiConstants.joystickDeadzone, driveController.getRightX()) != 0) {
             if (driveController.getHID().getLeftBumper()) { // Decrease speed
