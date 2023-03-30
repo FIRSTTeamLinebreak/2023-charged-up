@@ -15,7 +15,6 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.OiConstants;
 import frc.robot.commands.CraneControlCommand;
-import frc.robot.commands.SwerveAutoDriveCommand;
 import frc.robot.commands.SwerveJoystickDriveCommand;
 import frc.robot.subsystems.Crane;
 import frc.robot.subsystems.SwerveDrive;
@@ -34,7 +33,7 @@ public class Robot extends TimedRobot {
 
     private final double slowTurningDivisor = 4; // Joystick input is divided by this amount for slow turning
 
-    private final double fastPivotIncrementor = 1.6;
+    private final double fastPivotIncrementor = 1.8;
     private final double slowPivotIncrementor = 1.1;
 
     private final double armIncrementor = 1.5;
@@ -87,7 +86,7 @@ public class Robot extends TimedRobot {
     @Override
     public void autonomousInit() {
         swerveSub.zeroGyro();
-        new SwerveAutoDriveCommand(0.25, 0.25, 0, true).schedule();
+        new SwerveJoystickDriveCommand(() -> 0.0, () -> -0.3, () -> 0.0, () -> true).withTimeout(2.5).schedule();
     }
 
     /** This function is called periodically during autonomous. */
@@ -100,7 +99,7 @@ public class Robot extends TimedRobot {
         // Swerve control
         swerveSub.setDefaultCommand(new SwerveJoystickDriveCommand(
             () -> driveController.getLeftX() * -1,
-            () -> driveController.getLeftY(),
+            () -> driveController.getLeftY() * -1,
             () -> swerveTargetTurningSpeed * -1,
             () -> !driveController.getHID().getRightBumper()
         ));
