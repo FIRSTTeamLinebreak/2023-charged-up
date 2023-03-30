@@ -97,7 +97,7 @@ public class Crane extends SubsystemBase {
      * @return boolean
      */
     public boolean getPivotSwitch() {
-        return pivotSwitch.get();
+        return !pivotSwitch.get(); // Invert this bc the VEX limit switch is normally closed
     }
 
     /** Weather the arm limit switch is pressed.

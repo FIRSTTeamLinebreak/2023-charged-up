@@ -158,9 +158,9 @@ public class Robot extends TimedRobot {
         }
 
 
-        // if (craneSub.getPivotSwitch()) { // Prevent having the target further in when the limit switches are pressed
-        //     cranePivotTargetPosition = craneSub.getPivotPosition();
-        // }
+        if (craneSub.getPivotSwitch()) { // Prevent having the target further in when the limit switches are pressed
+            cranePivotTargetPosition = craneSub.getPivotPosition();
+        }
         // if (craneSub.getArmSwitch()) {
         //     craneArmTargetPosition = craneSub.getArmPosition();
         // }
