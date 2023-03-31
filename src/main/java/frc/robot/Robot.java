@@ -86,7 +86,8 @@ public class Robot extends TimedRobot {
     @Override
     public void autonomousInit() {
         swerveSub.zeroGyro();
-        new SwerveJoystickDriveCommand(() -> 0.0, () -> -0.3, () -> 0.0, () -> true).withTimeout(2.5).schedule();
+        new SwerveJoystickDriveCommand(() -> 0.0, () -> 0.5, () -> 0.0, () -> true).withTimeout(2).schedule(); // Move out
+        new SwerveJoystickDriveCommand(() -> 0.0, () -> -0.5, () -> 0.0, () -> true).withTimeout(2).schedule(); // Come back (Makes scoring immediately in teleop faster)
     }
 
     /** This function is called periodically during autonomous. */
