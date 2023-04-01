@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 /** The subsystem that handles the crane mechanism for placing game pieces. */
@@ -24,7 +25,7 @@ public class Crane extends SubsystemBase {
 
     // Pivot
     private final CANSparkMax pivotMotor;
-    private final DigitalInput pivotSwitch;
+    private final DutyCycleEncoder pivotEncoder;
     private double pivotSpeed = 0.0;
     // @TODO: Set all of these
     public static final double pivotFrontTop = 0.0;
@@ -39,9 +40,9 @@ public class Crane extends SubsystemBase {
     private final DigitalInput armSwitch;
     private double armSpeed = 0.0;
     // @TODO: Set all of these
-    public static final double armMax = 0.0;
+    public static final double armMax = 0.1355;
     public static final double armMid = 0.0;
-    public static final double armMin = 0.0;
+    public static final double armMin = 0.0892;
     public static final double armTurntableIntake = 0.0;
     public static final double armGroundIntake = 0.0;
     public static final double armHumanLoad = 0.0;
@@ -57,10 +58,11 @@ public class Crane extends SubsystemBase {
     /** Initializes a new Crane subsystem object. */
     private Crane() {
         pivotMotor = new CANSparkMax(13, MotorType.kBrushless);
-        pivotSwitch = new DigitalInput(0);
+        pivotEncoder = new DutyCycleEncoder(1);
+        pivotEncoder.setDistancePerRotation(360);
 
         armMotor = new CANSparkMax(14, MotorType.kBrushless);
-        armSwitch = new DigitalInput(1);
+        armSwitch = new DigitalInput(0);
 
         clawMotor = new CANSparkMax(15, MotorType.kBrushless);
         clawMotorFollower = new CANSparkMax(16, MotorType.kBrushless);
@@ -82,22 +84,25 @@ public class Crane extends SubsystemBase {
         clawSpeed = 0.0;
     }
 
-    /** Zeros the pivot encoder. */
-    public void zeroPivotEncoder() {
-        pivotMotor.getEncoder().setPosition(0);
-    }
-
     /** Zeros the arm encoder. */
     public void zeroArmEncoder() {
         armMotor.getEncoder().setPosition(0);
     }
 
-    /** Weather the pivot limit switch is pressed.
+    /** Weather the pivot is past the max area.
      *
      * @return boolean
      */
-    public boolean getPivotSwitch() {
-        return !pivotSwitch.get(); // Invert this bc the VEX limit switch is normally closed
+    public boolean ifPivotPastMax() {
+        return pivotMax < pivotEncoder.getAbsolutePosition();
+    }
+
+    /** Weather the pivot is past the min area.
+     *
+     * @return boolean
+     */
+    public boolean ifPivotPastMin() {
+        return pivotMin > pivotEncoder.getAbsolutePosition();
     }
 
     /** Weather the arm limit switch is pressed.
@@ -105,15 +110,19 @@ public class Crane extends SubsystemBase {
      * @return boolean
      */
     public boolean getArmSwitch() {
-        return armSwitch.get();
+        return !armSwitch.get(); // Invert bc VEX limit switches are normally closed
     }
 
-    /** Gets the position of the pivot motor.
+    /** Gets the position of the pivot motor, from the motor's encoder.
      *
      * @return Position in revolutions
      */
     public double getPivotPosition() {
         return pivotMotor.getEncoder().getPosition();
+    }
+
+    public double getPivotAbsolutePosition() {
+        return pivotEncoder.getAbsolutePosition();
     }
 
     /** Gets the position of the arm motor.

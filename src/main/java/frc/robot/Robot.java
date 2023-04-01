@@ -6,8 +6,6 @@ package frc.robot;
 
 import static frc.robot.Util.applyLinearDeadzone;
 
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -16,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.OiConstants;
 import frc.robot.commands.CraneControlCommand;
 import frc.robot.commands.SwerveJoystickDriveCommand;
+import frc.robot.commands.auto.AutoScoreAndExit;
 import frc.robot.subsystems.Crane;
 import frc.robot.subsystems.SwerveDrive;
 
@@ -33,7 +32,7 @@ public class Robot extends TimedRobot {
 
     private final double slowTurningDivisor = 4; // Joystick input is divided by this amount for slow turning
 
-    private final double fastPivotIncrementor = 1.8;
+    private final double fastPivotIncrementor = 2.4;
     private final double slowPivotIncrementor = 1.1;
 
     private final double armIncrementor = 1.5;
@@ -86,8 +85,7 @@ public class Robot extends TimedRobot {
     @Override
     public void autonomousInit() {
         swerveSub.zeroGyro();
-        new SwerveJoystickDriveCommand(() -> 0.0, () -> 0.5, () -> 0.0, () -> true).withTimeout(2).schedule(); // Move out
-        new SwerveJoystickDriveCommand(() -> 0.0, () -> -0.5, () -> 0.0, () -> true).withTimeout(2).schedule(); // Come back (Makes scoring immediately in teleop faster)
+        new AutoScoreAndExit().schedule();
     }
 
     /** This function is called periodically during autonomous. */
@@ -116,6 +114,8 @@ public class Robot extends TimedRobot {
     /** This function is called periodically during teleop. */
     @Override
     public void teleopPeriodic() {
+        SmartDashboard.putNumber("Pivot pos", craneSub.getPivotAbsolutePosition());
+
         // Swerve control
         if (applyLinearDeadzone(OiConstants.joystickDeadzone, driveController.getRightX()) != 0) {
             if (driveController.getHID().getLeftBumper()) { // Decrease speed
@@ -153,12 +153,9 @@ public class Robot extends TimedRobot {
         }
 
 
-        if (craneSub.getPivotSwitch()) { // Prevent having the target further in when the limit switches are pressed
-            cranePivotTargetPosition = craneSub.getPivotPosition();
+        if (craneSub.getArmSwitch()) {
+            craneArmTargetPosition = craneSub.getArmPosition();
         }
-        // if (craneSub.getArmSwitch()) {
-        //     craneArmTargetPosition = craneSub.getArmPosition();
-        // }
     }
 
     /** This function is called at the start of the test mode. */
@@ -170,15 +167,15 @@ public class Robot extends TimedRobot {
     /** This function is called periodically during test mode. */
     @Override
     public void testPeriodic() {
-        SwerveModuleState zero = new SwerveModuleState(0, Rotation2d.fromRadians(0));
-        SwerveModuleState[] zeros = {zero, zero, zero, zero};
-        swerveSub.setStates(zeros, true);
+        // SwerveModuleState zero = new SwerveModuleState(0, Rotation2d.fromRadians(0));
+        // SwerveModuleState[] zeros = {zero, zero, zero, zero};
+        // swerveSub.setStates(zeros, true);
 
-        SmartDashboard.putNumber("Pivot Position", craneSub.getPivotPosition());
-        SmartDashboard.putBoolean("Pivot Switch", craneSub.getPivotSwitch());
-        if (turningController.getHID().getAButtonPressed()) {
-            craneSub.zeroPivotEncoder();
-        }
-        craneSub.setPivotSpeed(turningController.getLeftY() * 0.1);
+        // SmartDashboard.putNumber("Pivot Position", craneSub.getPivotPosition());
+        // SmartDashboard.putBoolean("Pivot Switch", craneSub.getPivotSwitch());
+        // if (turningController.getHID().getAButtonPressed()) {
+        //     craneSub.zeroPivotEncoder();
+        // }
+        // craneSub.setPivotSpeed(turningController.getLeftY() * 0.1);
     }
 }

@@ -1,0 +1,13 @@
+DRIVE CONTROLLER (ETHAN)
+LJ - Drive
+RJX - Turn
+RB - Turn off field oriented (HOLD)/
+LB - Slow turning speed (HOLD)
+
+TURNING CONTROLLER (ABE)
+LT - Arm out/
+LB - Arm in/
+RT - Claw in/
+RB - Claw out/
+LJY - Pivot up & down slow/
+RJY - Pivot up & down fast/

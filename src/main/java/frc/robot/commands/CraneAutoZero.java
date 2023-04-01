@@ -6,12 +6,7 @@ import frc.robot.subsystems.Crane;
 /** Automatically zeros the pivot and arm encoders. */
 public class CraneAutoZero extends CommandBase {
     private Crane craneSub;
-
-    private boolean startedArmCalibration = false;
-    private boolean startedPivotCalibration = false;
-
-    private boolean finishedArmCalibration = false;
-    private boolean finishedPivotCalibration = false;
+    private boolean finished = false;
 
     /** Creates a command that automatically zeros the pivot and arm encoders. */
     public CraneAutoZero() {
@@ -20,29 +15,17 @@ public class CraneAutoZero extends CommandBase {
 
     /** Called once when the command is initially scheduled. */
     @Override
-    public void initialize() {}
+    public void initialize() {
+        craneSub.setArmSpeed(-0.1);
+    }
 
     /** Called repeatedly while the command is scheduled. */
     @Override
     public void execute() {
-        // Set motor speeds
-        if (!startedArmCalibration) {
-            craneSub.setArmSpeed(-0.1); // @TODO: Tune
-        }
-
-        if (!startedPivotCalibration && finishedArmCalibration) {
-            craneSub.setPivotSpeed(-0.5); // @TODO: Tune
-        }
-
-        // Check limit switches
         if (craneSub.getArmSwitch()) {
             craneSub.setArmSpeed(0);
             craneSub.zeroArmEncoder();
-        }
-
-        if (craneSub.getPivotSwitch()) {
-            craneSub.setPivotSpeed(0);
-            craneSub.zeroPivotEncoder();
+            finished = true;
         }
     }
 
@@ -59,6 +42,6 @@ public class CraneAutoZero extends CommandBase {
      */
     @Override
     public boolean isFinished() {
-        return finishedArmCalibration && finishedPivotCalibration;
+        return finished;
     }
 }
