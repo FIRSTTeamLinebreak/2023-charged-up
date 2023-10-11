@@ -87,13 +87,13 @@ public class SwerveDrive extends SubsystemBase {
      * @return Robot heading in Rotation2d
      */
     public Rotation2d getRotation2d() {
-        if (gyro.isMagnetometerCalibrated()) {
-            return Rotation2d.fromDegrees(gyro.getFusedHeading());
-        }
+        // if (gyro.isMagnetometerCalibrated()) {
+        //     return Rotation2d.fromDegrees(gyro.getFusedHeading());
+        // }
 
         // We have to invert the angle of the NavX so that rotating the robot counter-clockwise makes the angle increase.
-        return Rotation2d.fromDegrees((360.0 - gyro.getYaw()));
-        // return Rotation2d.fromDegrees(360-gyro.getPitch() - gyroOffset);
+        // return Rotation2d.fromDegrees((360.0 - gyro.getYaw()));
+        return Rotation2d.fromDegrees(360 - gyro.getYaw() - gyroOffset);
     }
 
     // @TODO implement some form of usage in OI for testing
