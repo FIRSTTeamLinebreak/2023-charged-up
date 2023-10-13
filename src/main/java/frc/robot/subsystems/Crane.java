@@ -38,6 +38,7 @@ public class Crane extends SubsystemBase {
     // Arm
     private final CANSparkMax armMotor;
     private final DigitalInput armSwitch;
+    private final DigitalInput frameSwitch;
     private double armSpeed = 0.0;
     // @TODO: Set all of these
     public static final double armMax = 0.1355;
@@ -63,6 +64,7 @@ public class Crane extends SubsystemBase {
 
         armMotor = new CANSparkMax(14, MotorType.kBrushless);
         armSwitch = new DigitalInput(0);
+        frameSwitch = new DigitalInput(1);
 
         clawMotor = new CANSparkMax(15, MotorType.kBrushless);
         clawMotorFollower = new CANSparkMax(16, MotorType.kBrushless);
@@ -111,6 +113,14 @@ public class Crane extends SubsystemBase {
      */
     public boolean getArmSwitch() {
         return !armSwitch.get(); // Invert bc VEX limit switches are normally closed
+    }
+
+    /** Weather the frame limit switch is pressed.
+     *
+     * @return boolean
+     */
+    public boolean getFrameSwitch() {
+        return !frameSwitch.get(); // Invert bc VEX limit switches are normally closed
     }
 
     /** Gets the position of the pivot motor, from the motor's encoder.

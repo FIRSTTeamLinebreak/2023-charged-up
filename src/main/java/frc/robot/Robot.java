@@ -179,20 +179,20 @@ public class Robot extends TimedRobot {
         // Crane control
         if (applyLinearDeadzone(OiConstants.joystickDeadzone, turningController.getRightY()) > 0) { // Pivot up fast
             cranePivotTargetPosition -= fastPivotIncrementor;
-        } else if (applyLinearDeadzone(OiConstants.joystickDeadzone, turningController.getRightY()) < 0) { // Pivot down
+        } else if (applyLinearDeadzone(OiConstants.joystickDeadzone, turningController.getRightY()) < 0 && !craneSub.getArmSwitch()) { // Pivot down
                                                                                                            // fast
             cranePivotTargetPosition += fastPivotIncrementor;
         } else if (applyLinearDeadzone(OiConstants.joystickDeadzone, turningController.getLeftY()) > 0) { // Pivot up
                                                                                                           // slow
             cranePivotTargetPosition -= slowPivotIncrementor;
-        } else if (applyLinearDeadzone(OiConstants.joystickDeadzone, turningController.getLeftY()) < 0) { // Pivot down
+        } else if (applyLinearDeadzone(OiConstants.joystickDeadzone, turningController.getLeftY()) < 0 && !craneSub.getArmSwitch()) { // Pivot down
                                                                                                           // slow
             cranePivotTargetPosition += slowPivotIncrementor;
         }
 
         if (applyLinearDeadzone(OiConstants.triggerDeadzone, turningController.getLeftTriggerAxis()) > 0) { // Arm out
             craneArmTargetPosition -= armIncrementor;
-        } else if (turningController.getHID().getLeftBumper()) { // Arm in
+        } else if (turningController.getHID().getLeftBumper() && !craneSub.getArmSwitch()) { // Arm in
             craneArmTargetPosition += armIncrementor;
         }
 
@@ -206,7 +206,8 @@ public class Robot extends TimedRobot {
         }
 
         if (craneSub.getArmSwitch()) {
-            craneArmTargetPosition = craneSub.getArmPosition();
+            craneSub.zeroArmEncoder();
+            craneArmTargetPosition = 0;
         }
 
         // Light Control
