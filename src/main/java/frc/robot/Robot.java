@@ -31,13 +31,6 @@ public class Robot extends TimedRobot {
         Lights.getInstance();
         OI.getInstance();
 
-        // lightSub.setRedVal(255);
-        // lightSub.setBlueVal(255);
-        // lightSub.setGreenVal(255);
-
-        // new LEDControlCommand(255, 255, 0).schedule();
-
-
         // NetworkTableInstance.getDefault().getTable("limelight").getEntry("camMode").setNumber(0);
         // NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(9);
     }
@@ -96,24 +89,11 @@ public class Robot extends TimedRobot {
     /** This function is called at the start of the test mode. */
     @Override
     public void testInit() {
-        // CommandScheduler.getInstance().cancelAll(); // Cancels all running commands
+        CommandScheduler.getInstance().cancelAll(); // Cancels all running commands
     }
 
     /** This function is called periodically during test mode. */
     @Override
     public void testPeriodic() {
-
-
-
-        // SwerveModuleState zero = new SwerveModuleState(0, Rotation2d.fromRadians(0));
-        // SwerveModuleState[] zeros = {zero, zero, zero, zero};
-        // swerveSub.setStates(zeros, true);
-
-        // SmartDashboard.putNumber("Pivot Position", craneSub.getPivotPosition());
-        // SmartDashboard.putBoolean("Pivot Switch", craneSub.getPivotSwitch());
-        // if (turningController.getHID().getAButtonPressed()) {
-        //     craneSub.zeroPivotEncoder();
-        // }
-        // craneSub.setPivotSpeed(turningController.getLeftY() * 0.1);
     }
 }

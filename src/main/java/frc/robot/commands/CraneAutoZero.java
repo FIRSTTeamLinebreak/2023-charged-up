@@ -16,14 +16,14 @@ public class CraneAutoZero extends CommandBase {
     /** Called once when the command is initially scheduled. */
     @Override
     public void initialize() {
-        craneSub.setArmSpeed(-0.1);
+        // craneSub.setArmSpeed(-0.1);
     }
 
     /** Called repeatedly while the command is scheduled. */
     @Override
     public void execute() {
         if (craneSub.getArmSwitch()) {
-            craneSub.setArmSpeed(0);
+            // craneSub.setArmSpeed(0);
             craneSub.zeroArmEncoder();
             finished = true;
         }
