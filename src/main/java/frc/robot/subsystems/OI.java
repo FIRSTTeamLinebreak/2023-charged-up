@@ -77,7 +77,25 @@ public class OI extends SubsystemBase {
 
         // Crane control
         craneSub.setDefaultCommand(new CraneControlCommand(
-                () -> cranePivotTargetPosition,
+                () -> {
+                    // Pivot Target
+                    double curPos = craneSub.getPivotPosition();
+
+                    // Fast Increment
+                    if (applyLinearDeadzone(OiConstants.joystickDeadzone, turningController.getRightY()) > 0 && !craneSub.getFrameSwitch()) {
+                        return curPos - fastPivotIncrementor;
+                    } else if (applyLinearDeadzone(OiConstants.joystickDeadzone, turningController.getRightY()) < 0) {
+                        return curPos + fastPivotIncrementor;
+                    }
+                    
+                    // Slow Increment
+                    if (applyLinearDeadzone(OiConstants.joystickDeadzone, turningController.getLeftY()) > 0 && !craneSub.getFrameSwitch()) {
+                        return curPos - slowPivotIncrementor;
+                    } else if (applyLinearDeadzone(OiConstants.joystickDeadzone, turningController.getLeftY()) < 0) {
+                        return curPos -= slowPivotIncrementor;
+                    }
+                    return craneSub.getPivotPosition();
+                },
                 () -> craneArmTargetPosition,
                 () -> craneClawTargetSpeed));
     }
@@ -93,20 +111,6 @@ public class OI extends SubsystemBase {
             }
         } else {
             swerveTargetTurningSpeed = 0;
-        }
-
-        // Crane control
-        if (applyLinearDeadzone(OiConstants.joystickDeadzone, turningController.getRightY()) > 0 && !craneSub.getFrameSwitch()) { // Pivot up fast
-            cranePivotTargetPosition -= fastPivotIncrementor;
-        } else if (applyLinearDeadzone(OiConstants.joystickDeadzone, turningController.getRightY()) < 0) { // Pivot down
-                                                                                                           // fast
-            cranePivotTargetPosition += fastPivotIncrementor;
-        } else if (applyLinearDeadzone(OiConstants.joystickDeadzone, turningController.getLeftY()) > 0 && !craneSub.getFrameSwitch()) { // Pivot up
-                                                                                                          // slow
-            cranePivotTargetPosition -= slowPivotIncrementor;
-        } else if (applyLinearDeadzone(OiConstants.joystickDeadzone, turningController.getLeftY()) < 0) { // Pivot down
-                                                                                                          // slow
-            cranePivotTargetPosition += slowPivotIncrementor;
         }
 
         if (applyLinearDeadzone(OiConstants.triggerDeadzone, turningController.getLeftTriggerAxis()) > 0) { // Arm out

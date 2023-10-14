@@ -69,8 +69,8 @@ public class Crane extends SubsystemBase {
 
     /** Zeros all motor speeds. */
     public void stop() {
-        cranePivotTargetPosition = pivotMotor.getEncoder().getPosition();
-        craneArmTargetPosition = armMotor.getEncoder().getPosition();
+        cranePivotTargetPosition = this.getPivotPosition();
+        craneArmTargetPosition = this.getArmPosition();
         clawSpeed = 0.0;
     }
 
@@ -121,7 +121,15 @@ public class Crane extends SubsystemBase {
      * @param speed Speed from [-1, 1]
      */
     public void setPivotTarget(double target) {
-        craneArmTargetPosition = target;
+        cranePivotTargetPosition = target;
+    }
+
+    /** get the current target of the pivot motor
+     * 
+     * @return double
+     */
+    public double getPivotTarget() {
+        return cranePivotTargetPosition;
     }
 
     /** Sets the speed of the arm motor.
@@ -129,7 +137,15 @@ public class Crane extends SubsystemBase {
      * @param speed Speed from [-1, 1]
      */
     public void setArmTarget(double target) {
-        cranePivotTargetPosition = target;
+        craneArmTargetPosition = target;
+    }
+
+    /** get the current target of the arm motor
+     * 
+     * @return double
+     */
+    public double getArmTarget() {
+        return craneArmTargetPosition;
     }
 
     /** Sets the speed of the claw motor.
