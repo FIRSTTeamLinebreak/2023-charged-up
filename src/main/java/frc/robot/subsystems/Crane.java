@@ -2,8 +2,9 @@ package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 /** The subsystem that handles the crane mechanism for placing game pieces. */
@@ -23,34 +24,31 @@ public class Crane extends SubsystemBase {
         return instance;
     }
 
-    // Pivot
     private final CANSparkMax pivotMotor;
-    private final DutyCycleEncoder pivotEncoder;
-    private double pivotSpeed = 0.0;
-    // @TODO: Set all of these
-    public static final double pivotFrontTop = 0.0;
-    public static final double pivotFrontMid = 6.0;
-    public static final double pivotFrontBottom = 0.0;
-    public static final double pivotTurntableIntake = 0.0;
-    public static final double pivotMax = 0.0;
-    public static final double pivotMin = 0.0;
-
-    // Arm
     private final CANSparkMax armMotor;
-    private final DigitalInput armSwitch;
-    private final DigitalInput frameSwitch;
-    private double armSpeed = 0.0;
 
-    // Claw
     private final CANSparkMax clawMotor;
     private final CANSparkMax clawMotorFollower;
+
+    private final DigitalInput armSwitch;
+    private final DigitalInput frameSwitch;
+    
+    private double cranePivotTargetPosition = 0.0;
+    private double craneArmTargetPosition = 0.0;
+
+    private final PIDController pivotPidController;
+    private final PIDController armPidController;
     private double clawSpeed = 0.0;
 
     /** Initializes a new Crane subsystem object. */
     private Crane() {
+        pivotPidController = new PIDController(0.5, 0.0, 0.0);
+        armPidController = new PIDController(0.75, 0.0, 0.0);
+
+        pivotPidController.setTolerance(0.25);
+        armPidController.setTolerance(0.125);
+
         pivotMotor = new CANSparkMax(13, MotorType.kBrushless);
-        pivotEncoder = new DutyCycleEncoder(5);
-        pivotEncoder.setDistancePerRotation(360);
 
         armMotor = new CANSparkMax(14, MotorType.kBrushless);
         armSwitch = new DigitalInput(0);
@@ -64,15 +62,15 @@ public class Crane extends SubsystemBase {
     /** Run approx. every 20 ms. */
     @Override
     public void periodic() {
-        pivotMotor.set(pivotSpeed);
-        armMotor.set(armSpeed);
+        pivotMotor.set(pivotPidController.calculate(this.getPivotPosition(), cranePivotTargetPosition));
+        armMotor.set(armPidController.calculate(this.getArmPosition(), craneArmTargetPosition));
         clawMotor.set(clawSpeed);
     }
 
     /** Zeros all motor speeds. */
     public void stop() {
-        pivotSpeed = 0.0;
-        armSpeed = 0.0;
+        cranePivotTargetPosition = pivotMotor.getEncoder().getPosition();
+        craneArmTargetPosition = armMotor.getEncoder().getPosition();
         clawSpeed = 0.0;
     }
 
@@ -110,10 +108,6 @@ public class Crane extends SubsystemBase {
         return pivotMotor.getEncoder().getPosition();
     }
 
-    public double getPivotAbsolutePosition() {
-        return pivotEncoder.getAbsolutePosition();
-    }
-
     /** Gets the position of the arm motor.
      *
      * @return Position in revolutions
@@ -126,16 +120,16 @@ public class Crane extends SubsystemBase {
      *
      * @param speed Speed from [-1, 1]
      */
-    public void setPivotSpeed(double speed) {
-        pivotSpeed = speed;
+    public void setPivotTarget(double target) {
+        craneArmTargetPosition = target;
     }
 
     /** Sets the speed of the arm motor.
      *
      * @param speed Speed from [-1, 1]
      */
-    public void setArmSpeed(double speed) {
-        armSpeed = speed;
+    public void setArmTarget(double target) {
+        cranePivotTargetPosition = target;
     }
 
     /** Sets the speed of the claw motor.

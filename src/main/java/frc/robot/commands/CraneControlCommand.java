@@ -1,6 +1,5 @@
 package frc.robot.commands;
 
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Crane;
 import java.util.function.Supplier;
@@ -13,9 +12,6 @@ public class CraneControlCommand extends CommandBase {
     private final Supplier<Double> armPositionSupplier;
     private final Supplier<Double> clawSpeedSupplier;
 
-    private final PIDController pivotPidController;
-    private final PIDController armPidController;
-
     /** Creates a command to control the crane while in teleop.
      *
      * @param pivotPositionSupplier Supplier for pivot position
@@ -26,12 +22,6 @@ public class CraneControlCommand extends CommandBase {
         this.pivotPositionSupplier = pivotPositionSupplier;
         this.armPositionSupplier = armPositionSupplier;
         this.clawSpeedSupplier = clawSpeedSupplier;
-
-        pivotPidController = new PIDController(0.5, 0.0, 0.0); // @TODO: Tune
-        armPidController = new PIDController(0.75, 0.0, 0.0); // @TODO: Tune
-
-        pivotPidController.setTolerance(0.25); // @TODO: Tune
-        armPidController.setTolerance(0.125); // @TODO: Tune
 
         craneSub = Crane.getInstance();
         addRequirements(craneSub);
@@ -45,8 +35,8 @@ public class CraneControlCommand extends CommandBase {
     /** Called repeatedly while the command is scheduled. */
     @Override
     public void execute() {
-        craneSub.setPivotSpeed(pivotPidController.calculate(craneSub.getPivotPosition(), pivotPositionSupplier.get()) * 0.1); // @TODO: Tune
-        craneSub.setArmSpeed(armPidController.calculate(craneSub.getArmPosition(), armPositionSupplier.get()) * 0.05); // @TODO: Tune
+        craneSub.setPivotTarget(pivotPositionSupplier.get()); // @TODO: Tune
+        craneSub.setArmTarget(armPositionSupplier.get()); // @TODO: Tune
         craneSub.setClawSpeed(clawSpeedSupplier.get());
     }
 

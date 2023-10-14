@@ -4,23 +4,12 @@
 
 package frc.robot;
 
-import static frc.robot.Util.applyLinearDeadzone;
-
-import org.photonvision.targeting.PhotonPipelineResult;
-
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.Constants.OiConstants;
-import frc.robot.commands.CraneControlCommand;
-import frc.robot.commands.LEDControlCommand;
-import frc.robot.commands.SwerveJoystickDriveCommand;
 import frc.robot.commands.auto.AutoScoreAndExit;
 import frc.robot.subsystems.Crane;
 import frc.robot.subsystems.Lights;
+import frc.robot.subsystems.OI;
 import frc.robot.subsystems.SwerveDrive;
 import frc.robot.subsystems.Vision;
 
@@ -32,52 +21,22 @@ import frc.robot.subsystems.Vision;
  * project, you must also update the build.gradle file in the project.
  */
 public class Robot extends TimedRobot {
-    // Controllers
-    private CommandXboxController driveController;
-    private CommandXboxController turningController;
-
-    // Swerve
-    private SwerveDrive swerveSub;
-    private double swerveTargetTurningSpeed = 0.0;
-
-    private final double slowTurningDivisor = 4; // Joystick input is divided by this amount for slow turning
-
-    private final double fastPivotIncrementor = 2.4;
-    private final double slowPivotIncrementor = 1.1;
-
-    private final double armIncrementor = 1.5;
-
-    private final double targetClawSpeed = 0.3;
-
-    // Crane
-    private Crane craneSub;
-
-    private double cranePivotTargetPosition = 0.0;
-    private double craneArmTargetPosition = 0.0;
-    private double craneClawTargetSpeed = 0.0;
-
-    // Vision
-    private Vision visionSub;
-
-    // Lights
-    private Lights lightSub;
 
     /** This function is run when the robot is first started up. */
     @Override
     public void robotInit() {
-        swerveSub = SwerveDrive.getInstance();
-        craneSub = Crane.getInstance();
-        visionSub = Vision.getInstance();
-        lightSub = Lights.getInstance();
+        SwerveDrive.getInstance();
+        Crane.getInstance();
+        Vision.getInstance();
+        Lights.getInstance();
+        OI.getInstance();
 
         // lightSub.setRedVal(255);
         // lightSub.setBlueVal(255);
         // lightSub.setGreenVal(255);
 
-        new LEDControlCommand(255, 255, 0).schedule();
+        // new LEDControlCommand(255, 255, 0).schedule();
 
-        driveController = new CommandXboxController(0);
-        turningController = new CommandXboxController(1);
 
         // NetworkTableInstance.getDefault().getTable("limelight").getEntry("camMode").setNumber(0);
         // NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(9);
@@ -103,8 +62,8 @@ public class Robot extends TimedRobot {
     /** This function is called at the start of the disabled mode. */
     @Override
     public void disabledInit() {
-        swerveSub.stop();
-        craneSub.stop();
+        SwerveDrive.getInstance().stop();
+        Crane.getInstance().stop();
     }
 
     /**
@@ -118,7 +77,7 @@ public class Robot extends TimedRobot {
     /** This function runs at the start of the autonomous mode. */
     @Override
     public void autonomousInit() {
-        swerveSub.zeroGyro();
+        SwerveDrive.getInstance().zeroGyro();
         new AutoScoreAndExit().schedule();
     }
 
@@ -130,91 +89,6 @@ public class Robot extends TimedRobot {
     /** This function is called at the start of teleop (Driver control). */
     @Override
     public void teleopInit() {
-        // PIDController alignPID = new PIDController(0.02, 0, 0);
-
-        // swerveSub.setDefaultCommand(new SwerveJoystickDriveCommand(
-        //         () -> 0.0,
-        //         () -> 0.0,
-        //         () -> {
-        //             PhotonPipelineResult result = visionSub.getResult();
-        //             if (result.hasTargets()) {
-        //                 double val = alignPID.calculate(result.getBestTarget().getYaw(), 0);
-        //                 SmartDashboard.putString("Target Data", result.getBestTarget().getYaw() + " " + val);
-        //                 return val;
-        //             }
-        //             return 0.0;
-        //         },
-        //         () -> false));
-        // Swerve control
-        swerveSub.setDefaultCommand(new SwerveJoystickDriveCommand(
-                () -> driveController.getLeftX() * -1,
-                () -> driveController.getLeftY() * -1,
-                () -> swerveTargetTurningSpeed * -1,
-                () -> !driveController.getHID().getRightBumper()));
-
-        // Crane control
-        craneSub.setDefaultCommand(new CraneControlCommand(
-                () -> cranePivotTargetPosition,
-                () -> craneArmTargetPosition,
-                () -> craneClawTargetSpeed));
-    }
-
-    /** This function is called periodically during teleop. */
-    @Override
-    public void teleopPeriodic() {
-        SmartDashboard.putNumber("Pivot pos", craneSub.getPivotAbsolutePosition());
-        SmartDashboard.putNumber("Heading", swerveSub.getRotation2d().getDegrees());
-
-        // Swerve control
-        if (applyLinearDeadzone(OiConstants.joystickDeadzone, driveController.getRightX()) != 0) {
-            if (driveController.getHID().getLeftBumper()) { // Decrease speed
-                swerveTargetTurningSpeed = driveController.getRightX() / slowTurningDivisor;
-            } else {
-                swerveTargetTurningSpeed = driveController.getRightX();
-            }
-        } else {
-            swerveTargetTurningSpeed = 0;
-        }
-
-        // Crane control
-        if (applyLinearDeadzone(OiConstants.joystickDeadzone, turningController.getRightY()) > 0 && !craneSub.getFrameSwitch()) { // Pivot up fast
-            cranePivotTargetPosition -= fastPivotIncrementor;
-        } else if (applyLinearDeadzone(OiConstants.joystickDeadzone, turningController.getRightY()) < 0) { // Pivot down
-                                                                                                           // fast
-            cranePivotTargetPosition += fastPivotIncrementor;
-        } else if (applyLinearDeadzone(OiConstants.joystickDeadzone, turningController.getLeftY()) > 0 && !craneSub.getFrameSwitch()) { // Pivot up
-                                                                                                          // slow
-            cranePivotTargetPosition -= slowPivotIncrementor;
-        } else if (applyLinearDeadzone(OiConstants.joystickDeadzone, turningController.getLeftY()) < 0) { // Pivot down
-                                                                                                          // slow
-            cranePivotTargetPosition += slowPivotIncrementor;
-        }
-
-        if (applyLinearDeadzone(OiConstants.triggerDeadzone, turningController.getLeftTriggerAxis()) > 0) { // Arm out
-            craneArmTargetPosition -= armIncrementor;
-        } else if (turningController.getHID().getLeftBumper() && !craneSub.getArmSwitch()) { // Arm in
-            craneArmTargetPosition += armIncrementor;
-        }
-
-        if (turningController.getHID().getRightBumper()) { // Claw out
-            craneClawTargetSpeed = targetClawSpeed;
-        } else if (applyLinearDeadzone(OiConstants.triggerDeadzone,
-                turningController.getHID().getRightTriggerAxis()) > 0) { // Claw in
-            craneClawTargetSpeed = targetClawSpeed * -1;
-        } else { // Stop when no input is given
-            craneClawTargetSpeed = 0;
-        }
-
-        if (craneSub.getArmSwitch()) {
-            craneSub.zeroArmEncoder();
-            craneArmTargetPosition = 0;
-        }
-
-        if (craneSub.getFrameSwitch()) {
-            craneSub.zeroPivotEncoder();
-            cranePivotTargetPosition = 0;
-        }
-
         // Light Control
         // turningController.a().onTrue(new LEDControlCommand(255, 0, 0));
     }
