@@ -177,27 +177,24 @@ public class Robot extends TimedRobot {
         }
 
         // Crane control
-        if (applyLinearDeadzone(OiConstants.joystickDeadzone, turningController.getRightY()) > 0 && !craneSub.getFrameSwitch()) { // Pivot up fast
-            cranePivotTargetPosition -= fastPivotIncrementor;
-        } else if (applyLinearDeadzone(OiConstants.joystickDeadzone, turningController.getRightY()) < 0) { // Pivot down
-                                                                                                           // fast
+        if (applyLinearDeadzone(OiConstants.joystickDeadzone, turningController.getRightY()) > 0) {
             if (craneSub.getFrameSwitch()) {
                 craneSub.zeroPivotEncoder();
                 cranePivotTargetPosition = 0;
             } else {
-                cranePivotTargetPosition += fastPivotIncrementor;
+                cranePivotTargetPosition -= fastPivotIncrementor;
             }
-        } else if (applyLinearDeadzone(OiConstants.joystickDeadzone, turningController.getLeftY()) > 0 && !craneSub.getFrameSwitch()) { // Pivot up
-                                                                                                          // slow
-            cranePivotTargetPosition -= slowPivotIncrementor;
-        } else if (applyLinearDeadzone(OiConstants.joystickDeadzone, turningController.getLeftY()) < 0) { // Pivot down
-                                                                                                          // slow
+        } else if (applyLinearDeadzone(OiConstants.joystickDeadzone, turningController.getRightY()) < 0) {
+            cranePivotTargetPosition += fastPivotIncrementor;
+        } else if (applyLinearDeadzone(OiConstants.joystickDeadzone, turningController.getLeftY()) > 0) {
             if (craneSub.getFrameSwitch()) {
                 craneSub.zeroPivotEncoder();
                 cranePivotTargetPosition = 0;
             } else {
-                cranePivotTargetPosition += slowPivotIncrementor;
+                cranePivotTargetPosition -= slowPivotIncrementor;
             }
+        } else if (applyLinearDeadzone(OiConstants.joystickDeadzone, turningController.getLeftY()) < 0) {
+            cranePivotTargetPosition += slowPivotIncrementor;
         }
 
         if (applyLinearDeadzone(OiConstants.triggerDeadzone, turningController.getLeftTriggerAxis()) > 0) { // Arm out
@@ -218,11 +215,6 @@ public class Robot extends TimedRobot {
         if (craneSub.getArmSwitch()) {
             craneSub.zeroArmEncoder();
             craneArmTargetPosition = 0;
-        }
-
-        if (craneSub.getFrameSwitch()) {
-            craneSub.zeroPivotEncoder();
-            cranePivotTargetPosition = 0;
         }
 
         // Light Control
