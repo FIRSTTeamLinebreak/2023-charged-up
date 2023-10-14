@@ -34,10 +34,6 @@ public class OI extends SubsystemBase {
     private double swerveTargetTurningSpeed = 0.0;
     private double slowTurningDivisor = 4;
 
-    private double cranePivotTargetPosition = 0.0;
-    private double craneArmTargetPosition = 0.0;
-    private double craneClawTargetSpeed = 0.0;
-
     private final double fastPivotIncrementor = 2.4;
     private final double slowPivotIncrementor = 1.1;
 
@@ -94,10 +90,28 @@ public class OI extends SubsystemBase {
                     } else if (applyLinearDeadzone(OiConstants.joystickDeadzone, turningController.getLeftY()) < 0) {
                         return curPos -= slowPivotIncrementor;
                     }
-                    return craneSub.getPivotPosition();
+                    return curPos;
                 },
-                () -> craneArmTargetPosition,
-                () -> craneClawTargetSpeed));
+                () -> {
+                    // Arm Target
+                    double curPos = craneSub.getArmPosition();
+                    if (applyLinearDeadzone(OiConstants.triggerDeadzone, turningController.getLeftTriggerAxis()) > 0) { 
+                        return curPos - armIncrementor;
+                    } else if (turningController.getHID().getLeftBumper() && !craneSub.getArmSwitch()) {
+                        return curPos + armIncrementor;
+                    }
+                    return curPos;
+                },
+                () -> {
+                    // Claw Speed
+                    if (turningController.getHID().getRightBumper()) { // Claw out
+                        return targetClawSpeed;
+                    } else if (applyLinearDeadzone(OiConstants.triggerDeadzone,
+                            turningController.getHID().getRightTriggerAxis()) > 0) { // Claw in
+                        return targetClawSpeed * -1;
+                    } 
+                    return 0.0;
+                }));
     }
 
     @Override
@@ -113,29 +127,12 @@ public class OI extends SubsystemBase {
             swerveTargetTurningSpeed = 0;
         }
 
-        if (applyLinearDeadzone(OiConstants.triggerDeadzone, turningController.getLeftTriggerAxis()) > 0) { // Arm out
-            craneArmTargetPosition -= armIncrementor;
-        } else if (turningController.getHID().getLeftBumper() && !craneSub.getArmSwitch()) { // Arm in
-            craneArmTargetPosition += armIncrementor;
-        }
-
-        if (turningController.getHID().getRightBumper()) { // Claw out
-            craneClawTargetSpeed = targetClawSpeed;
-        } else if (applyLinearDeadzone(OiConstants.triggerDeadzone,
-                turningController.getHID().getRightTriggerAxis()) > 0) { // Claw in
-            craneClawTargetSpeed = targetClawSpeed * -1;
-        } else { // Stop when no input is given
-            craneClawTargetSpeed = 0;
-        }
-
         if (craneSub.getArmSwitch()) {
             craneSub.zeroArmEncoder();
-            craneArmTargetPosition = 0;
         }
 
         if (craneSub.getFrameSwitch()) {
             craneSub.zeroPivotEncoder();
-            cranePivotTargetPosition = 0;
         }
     }
 }
