@@ -37,7 +37,7 @@ public class OI extends SubsystemBase {
 
     private double slowTurningDivisor = 4;
     private final double pivotIncrementor = 2.4;
-    private final double armIncrementor = 0.5;
+    private final double armIncrementor = 5;
     private final double targetClawSpeed = 0.3;
 
     /** Initializes a new Turntable subsystem object. */
@@ -87,10 +87,13 @@ public class OI extends SubsystemBase {
                         pivotMultiplier = 0.0;
                     }
 
-                    return curPos + pivotIncrementor * pivotMultiplier;
+                    if (pivotMultiplier != 0.0) {
+                        return curPos + pivotIncrementor * pivotMultiplier;
+                    }
+                    return craneSub.getPivotTarget();
                 },
                 () -> {
-                    // Pivot Target
+                    // Arm Target
                     double curPos = craneSub.getArmPosition();
                     double armMultiplier = applyLinearDeadzone(OiConstants.joystickDeadzone,
                             turningController.getLeftY())
@@ -100,19 +103,30 @@ public class OI extends SubsystemBase {
                         armMultiplier = 0.0;
                     }
 
-                    return curPos + armIncrementor * armMultiplier;
+                    if (armMultiplier != 0.0) {
+                        return curPos + armIncrementor * armMultiplier;
+                    }
+                    return craneSub.getArmTarget();
                 },
                 () -> {
-                    // Claw Speed
-                    double curSpeed = craneSub.getClawSpeed();
+                    // // Claw Speed
+                    // double curSpeed = craneSub.getClawSpeed();
 
-                    if (turningController.getHID().getXButtonReleased()) { // Claw out
-                        return curSpeed == 0.0 ? targetClawSpeed : 0.0;
+                    // if (turningController.getHID().getXButtonReleased()) { // Claw out
+                    //     return curSpeed == 0.0 ? targetClawSpeed : 0.0;
+                    // }
+                    // if (turningController.getHID().getXButtonReleased()) { // Claw in
+                    //     return curSpeed == 0.0 ? targetClawSpeed * -1 : 0.0;
+                    // }
+                    // return curSpeed;
+
+                    if (turningController.a().getAsBoolean()) {
+                        return targetClawSpeed;
                     }
-                    if (turningController.getHID().getXButtonReleased()) { // Claw in
-                        return curSpeed == 0.0 ? targetClawSpeed * -1 : 0.0;
+                    if (turningController.x().getAsBoolean()) {
+                        return targetClawSpeed * -1;
                     }
-                    return curSpeed;
+                    return 0.0;
                 }));
     }
 

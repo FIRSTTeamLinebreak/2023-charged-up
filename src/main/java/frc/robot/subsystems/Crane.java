@@ -32,7 +32,7 @@ public class Crane extends SubsystemBase {
 
     private final DigitalInput armSwitch;
     private final DigitalInput frameSwitch;
-    
+
     private double cranePivotTargetPosition = 0.0;
     private double craneArmTargetPosition = 0.0;
 
@@ -42,8 +42,8 @@ public class Crane extends SubsystemBase {
 
     /** Initializes a new Crane subsystem object. */
     private Crane() {
-        pivotPidController = new PIDController(0.5, 0.0, 0.0);
-        armPidController = new PIDController(0.1, 0.0, 0.0);
+        pivotPidController = new PIDController(0.175, 0.07, 0.0025);
+        armPidController = new PIDController(0.12, 0.1, 0.0025);
 
         pivotPidController.setTolerance(0.25);
         armPidController.setTolerance(0.125);
@@ -125,7 +125,7 @@ public class Crane extends SubsystemBase {
     }
 
     /** get the current target of the pivot motor
-     * 
+     *
      * @return double
      */
     public double getPivotTarget() {
@@ -141,7 +141,7 @@ public class Crane extends SubsystemBase {
     }
 
     /** get the current target of the arm motor
-     * 
+     *
      * @return double
      */
     public double getArmTarget() {
