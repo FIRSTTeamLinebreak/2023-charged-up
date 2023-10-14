@@ -181,13 +181,23 @@ public class Robot extends TimedRobot {
             cranePivotTargetPosition -= fastPivotIncrementor;
         } else if (applyLinearDeadzone(OiConstants.joystickDeadzone, turningController.getRightY()) < 0) { // Pivot down
                                                                                                            // fast
-            cranePivotTargetPosition += fastPivotIncrementor;
+            if (craneSub.getFrameSwitch()) {
+                craneSub.zeroPivotEncoder();
+                cranePivotTargetPosition = 0;
+            } else {
+                cranePivotTargetPosition += fastPivotIncrementor;
+            }
         } else if (applyLinearDeadzone(OiConstants.joystickDeadzone, turningController.getLeftY()) > 0 && !craneSub.getFrameSwitch()) { // Pivot up
                                                                                                           // slow
             cranePivotTargetPosition -= slowPivotIncrementor;
         } else if (applyLinearDeadzone(OiConstants.joystickDeadzone, turningController.getLeftY()) < 0) { // Pivot down
                                                                                                           // slow
-            cranePivotTargetPosition += slowPivotIncrementor;
+            if (craneSub.getFrameSwitch()) {
+                craneSub.zeroPivotEncoder();
+                cranePivotTargetPosition = 0;
+            } else {
+                cranePivotTargetPosition += slowPivotIncrementor;
+            }
         }
 
         if (applyLinearDeadzone(OiConstants.triggerDeadzone, turningController.getLeftTriggerAxis()) > 0) { // Arm out
