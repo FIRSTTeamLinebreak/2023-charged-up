@@ -177,15 +177,15 @@ public class Robot extends TimedRobot {
         }
 
         // Crane control
-        if (applyLinearDeadzone(OiConstants.joystickDeadzone, turningController.getRightY()) > 0) { // Pivot up fast
+        if (applyLinearDeadzone(OiConstants.joystickDeadzone, turningController.getRightY()) > 0 && !craneSub.getFrameSwitch()) { // Pivot up fast
             cranePivotTargetPosition -= fastPivotIncrementor;
-        } else if (applyLinearDeadzone(OiConstants.joystickDeadzone, turningController.getRightY()) < 0 && !craneSub.getArmSwitch()) { // Pivot down
+        } else if (applyLinearDeadzone(OiConstants.joystickDeadzone, turningController.getRightY()) < 0) { // Pivot down
                                                                                                            // fast
             cranePivotTargetPosition += fastPivotIncrementor;
-        } else if (applyLinearDeadzone(OiConstants.joystickDeadzone, turningController.getLeftY()) > 0) { // Pivot up
+        } else if (applyLinearDeadzone(OiConstants.joystickDeadzone, turningController.getLeftY()) > 0 && !craneSub.getFrameSwitch()) { // Pivot up
                                                                                                           // slow
             cranePivotTargetPosition -= slowPivotIncrementor;
-        } else if (applyLinearDeadzone(OiConstants.joystickDeadzone, turningController.getLeftY()) < 0 && !craneSub.getArmSwitch()) { // Pivot down
+        } else if (applyLinearDeadzone(OiConstants.joystickDeadzone, turningController.getLeftY()) < 0) { // Pivot down
                                                                                                           // slow
             cranePivotTargetPosition += slowPivotIncrementor;
         }
@@ -208,6 +208,11 @@ public class Robot extends TimedRobot {
         if (craneSub.getArmSwitch()) {
             craneSub.zeroArmEncoder();
             craneArmTargetPosition = 0;
+        }
+
+        if (craneSub.getFrameSwitch()) {
+            craneSub.zeroPivotEncoder();
+            cranePivotTargetPosition = 0;
         }
 
         // Light Control

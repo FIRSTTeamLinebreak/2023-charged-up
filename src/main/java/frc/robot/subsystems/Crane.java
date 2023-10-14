@@ -40,16 +40,6 @@ public class Crane extends SubsystemBase {
     private final DigitalInput armSwitch;
     private final DigitalInput frameSwitch;
     private double armSpeed = 0.0;
-    // @TODO: Set all of these
-    public static final double armMax = 0.1355;
-    public static final double armMid = 0.0;
-    public static final double armMin = 0.0892;
-    public static final double armTurntableIntake = 0.0;
-    public static final double armGroundIntake = 0.0;
-    public static final double armHumanLoad = 0.0;
-    public static final double armDropLow = 0.0;
-    public static final double armDropMid = 0.0;
-    public static final double armDropHigh = 0.0;
 
     // Claw
     private final CANSparkMax clawMotor;
@@ -59,7 +49,7 @@ public class Crane extends SubsystemBase {
     /** Initializes a new Crane subsystem object. */
     private Crane() {
         pivotMotor = new CANSparkMax(13, MotorType.kBrushless);
-        pivotEncoder = new DutyCycleEncoder(1);
+        pivotEncoder = new DutyCycleEncoder(5);
         pivotEncoder.setDistancePerRotation(360);
 
         armMotor = new CANSparkMax(14, MotorType.kBrushless);
@@ -91,20 +81,9 @@ public class Crane extends SubsystemBase {
         armMotor.getEncoder().setPosition(0);
     }
 
-    /** Weather the pivot is past the max area.
-     *
-     * @return boolean
-     */
-    public boolean ifPivotPastMax() {
-        return pivotMax < pivotEncoder.getAbsolutePosition();
-    }
-
-    /** Weather the pivot is past the min area.
-     *
-     * @return boolean
-     */
-    public boolean ifPivotPastMin() {
-        return pivotMin > pivotEncoder.getAbsolutePosition();
+    /** Zeros the arm encoder. */
+    public void zeroPivotEncoder() {
+        pivotMotor.getEncoder().setPosition(0);
     }
 
     /** Weather the arm limit switch is pressed.
