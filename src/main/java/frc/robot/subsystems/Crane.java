@@ -155,4 +155,8 @@ public class Crane extends SubsystemBase {
     public void setClawSpeed(double speed) {
         clawSpeed = speed;
     }
+
+    public double getClawSpeed() {
+        return clawSpeed;
+    }
 }

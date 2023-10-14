@@ -82,14 +82,14 @@ public class OI extends SubsystemBase {
                 () -> {
                     // Pivot Target
                     double curPos = craneSub.getPivotPosition();
-                    double pivotMult = applyLinearDeadzone(OiConstants.joystickDeadzone, turningController.getRightY())
+                    double pivotMultiplier = applyLinearDeadzone(OiConstants.joystickDeadzone, turningController.getRightY())
                             * -1;
 
-                    if (craneSub.getFrameSwitch() && pivotMult < 0.0) {
-                        pivotMult = 0.0;
+                    if (craneSub.getFrameSwitch() && pivotMultiplier < 0.0) {
+                        pivotMultiplier = 0.0;
                     }
 
-                    return curPos + pivotIncrementor * pivotMult;
+                    return curPos + pivotIncrementor * pivotMultiplier;
 
                     // // Fast Increment
                     // if (applyLinearDeadzone(OiConstants.joystickDeadzone,
@@ -113,14 +113,14 @@ public class OI extends SubsystemBase {
                 () -> {
                     // Pivot Target
                     double curPos = craneSub.getArmPosition();
-                    double armMult = applyLinearDeadzone(OiConstants.joystickDeadzone, turningController.getLeftY())
+                    double armMultiplier = applyLinearDeadzone(OiConstants.joystickDeadzone, turningController.getLeftY())
                             * -1;
 
-                    if (craneSub.getArmSwitch() && armMult < 0.0) {
-                        armMult = 0.0;
+                    if (craneSub.getArmSwitch() && armMultiplier < 0.0) {
+                        armMultiplier = 0.0;
                     }
 
-                    return curPos + pivotIncrementor * armMult;
+                    return curPos + pivotIncrementor * armMultiplier;
 
                     // // Arm Target
                     // double curPos = craneSub.getArmPosition();
@@ -135,13 +135,15 @@ public class OI extends SubsystemBase {
                 },
                 () -> {
                     // Claw Speed
-                    if (turningController.getHID().getRightBumper()) { // Claw out
-                        return targetClawSpeed;
-                    } else if (applyLinearDeadzone(OiConstants.triggerDeadzone,
-                            turningController.getHID().getRightTriggerAxis()) > 0) { // Claw in
-                        return targetClawSpeed * -1;
+                    double curSpeed = craneSub.getClawSpeed();
+
+                    if (turningController.getHID().getXButtonReleased()) { // Claw out
+                        return curSpeed == 0.0 ? targetClawSpeed : 0.0;
                     }
-                    return 0.0;
+                    if (turningController.getHID().getXButtonReleased()) { // Claw in
+                        return curSpeed == 0.0 ? targetClawSpeed * -1 : 0.0;
+                    }
+                    return curSpeed;
                 }));
     }
 
