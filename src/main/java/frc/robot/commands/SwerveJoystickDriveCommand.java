@@ -1,15 +1,14 @@
 package frc.robot.commands;
 
+import java.util.function.Supplier;
+
 import static frc.robot.Util.applyCircularDeadzone;
 import static frc.robot.Util.applyLinearDeadzone;
 
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.Pair;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.OiConstants;
-import frc.robot.Constants.SwerveConstants;
 import frc.robot.subsystems.SwerveDrive;
-import java.util.function.Supplier;
 
 /** Controls the swerve subsystem via joysticks. */
 public class SwerveJoystickDriveCommand extends CommandBase {
@@ -50,29 +49,18 @@ public class SwerveJoystickDriveCommand extends CommandBase {
         double xSpeed = xSpeedSupplier.get();
         double ySpeed = ySpeedSupplier.get();
         double turningSpeed = turningSpeedSupplier.get();
-        ChassisSpeeds chassisSpeed;
 
         // Implement a deadzone to prevent joystick drift from becoming a problem
-        Double[] deadzones = applyCircularDeadzone(OiConstants.joystickDeadzone, xSpeed, ySpeed);
-        xSpeed = deadzones[0];
-        ySpeed = deadzones[1];
+        Pair<Double, Double> speeds = applyCircularDeadzone(OiConstants.joystickDeadzone, xSpeed, ySpeed);
+        xSpeed = speeds.getFirst();
+        ySpeed = speeds.getSecond();
         turningSpeed = applyLinearDeadzone(OiConstants.joystickDeadzone, turningSpeed);
 
-        // Multiply joystick speeds by their multipliers
-        xSpeed *= OiConstants.xySpeedMultiplier;
-        ySpeed *= OiConstants.xySpeedMultiplier;
-        turningSpeed *= OiConstants.turningSpeedMultiplier;
-
-        // Convert speeds to chassis speeds
-        if (fieldOrientedDrivingSupplier.get()) {
-            chassisSpeed = ChassisSpeeds.fromFieldRelativeSpeeds(ySpeed, xSpeed, turningSpeed, swerveSub.getRotation2d());
-        } else {
-            chassisSpeed = new ChassisSpeeds(ySpeed, xSpeed, turningSpeed); // Yes, ChassisSpeeds wants x, y, and turning and we give it y, x, turning. This is the fix to rotate the controls 90 degrees
-        }
-
-        // Create swerve module states for the desired movement and push to subsystem
-        SwerveModuleState[] moduleStates = SwerveConstants.driveKinematics.toSwerveModuleStates(chassisSpeed);
-        swerveSub.setStates(moduleStates, true);
+        swerveSub.setDirection(
+                xSpeed, 
+                ySpeed, 
+                turningSpeed, 
+                fieldOrientedDrivingSupplier.get());
     }
 
     /** Called when either the command finishes normally, or when it interrupted/canceled. Do not schedule commands here that share requirements with this command. Use andThen(Command) instead.

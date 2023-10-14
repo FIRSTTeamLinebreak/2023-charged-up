@@ -1,5 +1,7 @@
 package frc.robot;
 
+import edu.wpi.first.math.Pair;
+
 /** Some utility functions. */
 public class Util {
     /**
@@ -23,10 +25,10 @@ public class Util {
      *
      * @return an array of size two of form [x, y] where either both x and y are zero or they both reflect the input
      */
-    public static Double[] applyCircularDeadzone(double deadzone, double x, double y) {
+    public static Pair<Double, Double> applyCircularDeadzone(double deadzone, double x, double y) {
         Double magnitude = Math.sqrt((x * x) + (y * y));
-        Double[] ret = {x, y};
-        Double[] zero = {0.0, 0.0};
+        Pair<Double, Double> ret  = new Pair<Double, Double>(x, y);
+        Pair<Double, Double> zero = new Pair<Double, Double>(0.0, 0.0);
 
         return magnitude > deadzone ? ret : zero;
     }
