@@ -12,7 +12,8 @@ public class OI extends SubsystemBase {
     // Define the singleton
     private static OI instance;
 
-    /** Get this instance.
+    /**
+     * Get this instance.
      *
      * @return The subsystem
      */
@@ -31,13 +32,8 @@ public class OI extends SubsystemBase {
     private CommandXboxController driveController;
     private CommandXboxController turningController;
 
-    private double swerveTargetTurningSpeed = 0.0;
     private double slowTurningDivisor = 4;
-
-    private final double fastPivotIncrementor = 2.4;
-    private final double slowPivotIncrementor = 1.1;
-
-    private final double armIncrementor = 1.5;
+    private final double pivotIncrementor = 2.4;
     private final double targetClawSpeed = 0.3;
 
     /** Initializes a new Turntable subsystem object. */
@@ -51,24 +47,34 @@ public class OI extends SubsystemBase {
         // PIDController alignPID = new PIDController(0.02, 0, 0);
 
         // swerveSub.setDefaultCommand(new SwerveJoystickDriveCommand(
-        //         () -> 0.0,
-        //         () -> 0.0,
-        //         () -> {
-        //             PhotonPipelineResult result = visionSub.getResult();
-        //             if (result.hasTargets()) {
-        //                 double val = alignPID.calculate(result.getBestTarget().getYaw(), 0);
-        //                 SmartDashboard.putString("Target Data", result.getBestTarget().getYaw() + " " + val);
-        //                 return val;
-        //             }
-        //             return 0.0;
-        //         },
-        //         () -> false));
+        // () -> 0.0,
+        // () -> 0.0,
+        // () -> {
+        // PhotonPipelineResult result = visionSub.getResult();
+        // if (result.hasTargets()) {
+        // double val = alignPID.calculate(result.getBestTarget().getYaw(), 0);
+        // SmartDashboard.putString("Target Data", result.getBestTarget().getYaw() + " "
+        // + val);
+        // return val;
+        // }
+        // return 0.0;
+        // },
+        // () -> false));
 
         // Swerve control
         swerveSub.setDefaultCommand(new SwerveJoystickDriveCommand(
                 () -> driveController.getLeftX() * -1,
                 () -> driveController.getLeftY() * -1,
-                () -> swerveTargetTurningSpeed * -1,
+                () -> {
+                    // Rotation
+                    if (applyLinearDeadzone(OiConstants.joystickDeadzone, driveController.getRightX()) != 0) {
+                        if (driveController.getHID().getLeftBumper()) {
+                            return driveController.getRightX() / slowTurningDivisor * -1;
+                        }
+                        return driveController.getRightX() * -1;
+                    }
+                    return 0.0;
+                },
                 () -> !driveController.getHID().getRightBumper()));
 
         // Crane control
@@ -76,31 +82,56 @@ public class OI extends SubsystemBase {
                 () -> {
                     // Pivot Target
                     double curPos = craneSub.getPivotPosition();
+                    double pivotMult = applyLinearDeadzone(OiConstants.joystickDeadzone, turningController.getRightY())
+                            * -1;
 
-                    // Fast Increment
-                    if (applyLinearDeadzone(OiConstants.joystickDeadzone, turningController.getRightY()) > 0 && !craneSub.getFrameSwitch()) {
-                        return curPos - fastPivotIncrementor;
-                    } else if (applyLinearDeadzone(OiConstants.joystickDeadzone, turningController.getRightY()) < 0) {
-                        return curPos + fastPivotIncrementor;
+                    if (craneSub.getFrameSwitch() && pivotMult < 0.0) {
+                        pivotMult = 0.0;
                     }
-                    
-                    // Slow Increment
-                    if (applyLinearDeadzone(OiConstants.joystickDeadzone, turningController.getLeftY()) > 0 && !craneSub.getFrameSwitch()) {
-                        return curPos - slowPivotIncrementor;
-                    } else if (applyLinearDeadzone(OiConstants.joystickDeadzone, turningController.getLeftY()) < 0) {
-                        return curPos -= slowPivotIncrementor;
-                    }
-                    return curPos;
+
+                    return curPos + pivotIncrementor * pivotMult;
+
+                    // // Fast Increment
+                    // if (applyLinearDeadzone(OiConstants.joystickDeadzone,
+                    // turningController.getRightY()) > 0 && !craneSub.getFrameSwitch()) {
+                    // return curPos - fastPivotIncrementor;
+                    // } else if (applyLinearDeadzone(OiConstants.joystickDeadzone,
+                    // turningController.getRightY()) < 0) {
+                    // return curPos + fastPivotIncrementor;
+                    // }
+
+                    // // Slow Increment
+                    // if (applyLinearDeadzone(OiConstants.joystickDeadzone,
+                    // turningController.getLeftY()) > 0 && !craneSub.getFrameSwitch()) {
+                    // return curPos - slowPivotIncrementor;
+                    // } else if (applyLinearDeadzone(OiConstants.joystickDeadzone,
+                    // turningController.getLeftY()) < 0) {
+                    // return curPos -= slowPivotIncrementor;
+                    // }
+                    // return curPos;
                 },
                 () -> {
-                    // Arm Target
+                    // Pivot Target
                     double curPos = craneSub.getArmPosition();
-                    if (applyLinearDeadzone(OiConstants.triggerDeadzone, turningController.getLeftTriggerAxis()) > 0) { 
-                        return curPos - armIncrementor;
-                    } else if (turningController.getHID().getLeftBumper() && !craneSub.getArmSwitch()) {
-                        return curPos + armIncrementor;
+                    double armMult = applyLinearDeadzone(OiConstants.joystickDeadzone, turningController.getLeftY())
+                            * -1;
+
+                    if (craneSub.getArmSwitch() && armMult < 0.0) {
+                        armMult = 0.0;
                     }
-                    return curPos;
+
+                    return curPos + pivotIncrementor * armMult;
+
+                    // // Arm Target
+                    // double curPos = craneSub.getArmPosition();
+                    // if (applyLinearDeadzone(OiConstants.triggerDeadzone,
+                    // turningController.getLeftTriggerAxis()) > 0) {
+                    // return curPos - armIncrementor;
+                    // } else if (turningController.getHID().getLeftBumper() &&
+                    // !craneSub.getArmSwitch()) {
+                    // return curPos + armIncrementor;
+                    // }
+                    // return curPos;
                 },
                 () -> {
                     // Claw Speed
@@ -109,24 +140,13 @@ public class OI extends SubsystemBase {
                     } else if (applyLinearDeadzone(OiConstants.triggerDeadzone,
                             turningController.getHID().getRightTriggerAxis()) > 0) { // Claw in
                         return targetClawSpeed * -1;
-                    } 
+                    }
                     return 0.0;
                 }));
     }
 
     @Override
     public void periodic() {
-        // Swerve control
-        if (applyLinearDeadzone(OiConstants.joystickDeadzone, driveController.getRightX()) != 0) {
-            if (driveController.getHID().getLeftBumper()) { // Decrease speed
-                swerveTargetTurningSpeed = driveController.getRightX() / slowTurningDivisor;
-            } else {
-                swerveTargetTurningSpeed = driveController.getRightX();
-            }
-        } else {
-            swerveTargetTurningSpeed = 0;
-        }
-
         if (craneSub.getArmSwitch()) {
             craneSub.zeroArmEncoder();
         }
