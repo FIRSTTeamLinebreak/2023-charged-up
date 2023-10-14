@@ -43,7 +43,7 @@ public class Crane extends SubsystemBase {
     /** Initializes a new Crane subsystem object. */
     private Crane() {
         pivotPidController = new PIDController(0.5, 0.0, 0.0);
-        armPidController = new PIDController(0.75, 0.0, 0.0);
+        armPidController = new PIDController(0.1, 0.0, 0.0);
 
         pivotPidController.setTolerance(0.25);
         armPidController.setTolerance(0.125);

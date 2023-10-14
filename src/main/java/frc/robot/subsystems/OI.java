@@ -5,7 +5,6 @@ import static frc.robot.Util.applyLinearDeadzone;
 import org.photonvision.targeting.PhotonPipelineResult;
 
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.OiConstants;
@@ -38,11 +37,12 @@ public class OI extends SubsystemBase {
 
     private double slowTurningDivisor = 4;
     private final double pivotIncrementor = 2.4;
-    private final double armIncrementor = 0.7;
+    private final double armIncrementor = 0.5;
     private final double targetClawSpeed = 0.3;
 
     /** Initializes a new Turntable subsystem object. */
     private OI() {
+        super();
         swerveSub = SwerveDrive.getInstance();
         craneSub = Crane.getInstance();
 
@@ -50,21 +50,6 @@ public class OI extends SubsystemBase {
         turningController = new CommandXboxController(1);
 
         PIDController visionPid = new PIDController(0.02, 0, 0);
-
-        // swerveSub.setDefaultCommand(new SwerveJoystickDriveCommand(
-        // () -> 0.0,
-        // () -> 0.0,
-        // () -> {
-        // PhotonPipelineResult result = visionSub.getResult();
-        // if (result.hasTargets()) {
-        // double val = alignPID.calculate(result.getBestTarget().getYaw(), 0);
-        // SmartDashboard.putString("Target Data", result.getBestTarget().getYaw() + " "
-        // + val);
-        // return val;
-        // }
-        // return 0.0;
-        // },
-        // () -> false));
 
         // Swerve control
         swerveSub.setDefaultCommand(new SwerveJoystickDriveCommand(
@@ -76,8 +61,6 @@ public class OI extends SubsystemBase {
                     if (driveController.getHID().getAButton()) {
                         if (result.hasTargets()) {
                             double val = visionPid.calculate(result.getBestTarget().getYaw(), 0);
-                            SmartDashboard.putString("Target Data", result.getBestTarget().getYaw() + " "
-                                    + val);
                             return val;
                         }
                     }
